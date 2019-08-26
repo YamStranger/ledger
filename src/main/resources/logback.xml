@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Put this file into src/main/resources -->
+<configuration>
+
+    <contextName>WebContext</contextName>
+
+    <jmxConfigurator/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{200} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- This appender to catch all except trace -->
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/logback_debug.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>log.%i.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>100</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{200} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="DEBUG_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+        <appender-ref ref="INFO_FILE"/>
+    </root>
+
+    <!-- Third Parties Logs -->
+    <logger name="org.springframework">
+        <level value="ERROR"/>
+    </logger>
+
+    <logger name="com.github.gist">
+        <level value="ERROR"/>
+    </logger>
+
+    <logger name="org.apache.http">
+        <level value="ERROR"/>
+    </logger>
+    <logger name="com.ullink.slack">
+        <level value="ERROR"/>
+    </logger>
+    <logger name="si.mazi.rescu">
+        <level value="ERROR"/>
+    </logger>
+    <logger name="org.knowm.xchange">
+        <level value="ERROR"/>
+    </logger>
+</configuration>
