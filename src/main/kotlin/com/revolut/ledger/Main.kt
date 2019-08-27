@@ -4,18 +4,23 @@ import com.google.inject.Guice.createInjector
 import com.google.inject.Injector
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import dev.misfitlabs.kotlinguice4.getInstance
 
 fun main() {
     val loadedConfig = loadSystemEnvironmentProperties().withFallback(
         ConfigFactory.load("default-settings.json")!!
     )
+    startApp(loadedConfig)
+}
 
-    val injector: Injector = createInjector(ApplicationConfiguration(loadedConfig))
-    val application = injector.getInstance(Application::class.java)
+internal fun startApp(config: Config): Injector {
+    val injector: Injector = createInjector(ApplicationConfiguration(config))
+    val application = injector.getInstance<Application>()
     Runtime.getRuntime().addShutdownHook(Thread {
         application.stop()
     })
     application.start()
+    return injector
 }
 
 private fun loadSystemEnvironmentProperties(): Config =
