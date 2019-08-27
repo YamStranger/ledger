@@ -1,6 +1,7 @@
 package com.revolut.ledger.rest
 
 import com.revolut.ledger.rest.Params.ACCOUNT_ID
+import com.revolut.ledger.rest.handler.HandlerFactory
 import io.undertow.Handlers
 import io.undertow.Undertow
 import io.undertow.server.HttpHandler

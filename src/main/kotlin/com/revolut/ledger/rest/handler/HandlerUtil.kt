@@ -1,4 +1,4 @@
-package com.revolut.ledger.rest
+package com.revolut.ledger.rest.handler
 
 import io.undertow.server.HttpServerExchange
 import io.undertow.util.Headers

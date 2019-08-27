@@ -1,4 +1,4 @@
-package com.revolut.ledger.rest
+package com.revolut.ledger.rest.response
 
 import java.util.UUID
 

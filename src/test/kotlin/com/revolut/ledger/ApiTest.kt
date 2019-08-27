@@ -3,8 +3,8 @@ package com.revolut.ledger
 import com.github.kittinunf.fuel.gson.responseObject
 import com.github.kittinunf.fuel.httpGet
 import com.google.inject.Injector
-import com.revolut.ledger.rest.ErrorObject
-import com.revolut.ledger.rest.HttpResponse
+import com.revolut.ledger.rest.response.ErrorObject
+import com.revolut.ledger.rest.response.HttpResponse
 import com.typesafe.config.ConfigFactory
 import io.mockk.mockk
 import io.undertow.util.StatusCodes
