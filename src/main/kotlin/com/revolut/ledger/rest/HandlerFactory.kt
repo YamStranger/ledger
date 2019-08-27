@@ -1,20 +1,22 @@
 package com.revolut.ledger.rest
 
-import com.google.gson.Gson
+import com.revolut.ledger.rest.ObjectMapper.serialize
+import com.revolut.ledger.rest.ObjectMapper.toJson
 import io.undertow.Handlers
 import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange
 import io.undertow.server.handlers.BlockingHandler
 import io.undertow.server.handlers.ExceptionHandler
+import io.undertow.util.StatusCodes
+import java.util.UUID
 import javax.inject.Inject
+import mu.KotlinLogging
 
 class HandlerFactory @Inject constructor(
     private val okHttpHandler: OkHttpHandler,
     private val cantFindHandler: CantFindHandler
 ) {
-    companion object {
-        private val gson = Gson()
-    }
+    private val logger = KotlinLogging.logger {}
 
     fun getOkHandler(): HttpHandler = okHttpHandler.instrumented()
     fun getCantFindHandler(): HttpHandler = cantFindHandler.instrumented()
@@ -38,23 +40,29 @@ class HandlerFactory @Inject constructor(
     private fun HttpHandler.withCors() = CorsHandler(this)
 
     private fun handleBadRequestException(exchange: HttpServerExchange) {
-        exchange.statusCode = 400
+
         val exception = exchange.getAttachment(ExceptionHandler.THROWABLE) as BadRequestException
+        exchange.statusCode = exception.errorResponse.statusCode
         exchange.responseSender.send(
-            getJsonErrorMessage(
-                exception.errorResponse
-            ))
+            serialize(toJson(HttpResponse(
+                id = exception.errorResponse.id,
+                body = exception.errorResponse.body
+            )))
+        )
     }
 
     private fun handleUndefinedException(exchange: HttpServerExchange) {
-        exchange.statusCode = 500
-        exchange.responseSender.send(getJsonErrorMessage(ErrorResponse(
-            errorCode = 0,
-            errorDetails = "Internal Error")
-        ))
-    }
-
-    private fun getJsonErrorMessage(message: ErrorResponse): String {
-        return gson.toJson(message)
+        exchange.statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+        val exception = exchange.getAttachment(ExceptionHandler.THROWABLE)
+        val errorId = UUID.randomUUID()
+        logger.error(exception) { "undefinedException: $errorId" }
+        exchange.responseSender.send(
+            serialize(toJson(HttpResponse(
+                id = errorId,
+                body = ErrorObject(
+                    errorCode = 0,
+                    errorDetails = "Internal Error")
+            )))
+        )
     }
 }

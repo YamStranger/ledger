@@ -1,19 +1,20 @@
 package com.revolut.ledger.rest
 
-import com.google.gson.Gson
-import io.undertow.server.HttpHandler
-import io.undertow.server.HttpServerExchange
+import io.undertow.util.StatusCodes
+import java.util.UUID
+import mu.KotlinLogging
 
-class CantFindHandler : HttpHandler {
-    companion object {
-        private val objectMapper = Gson()
-    }
+class CantFindHandler : LedgerHandler<ErrorObject>() {
+    private val logger = KotlinLogging.logger {}
 
-    override fun handleRequest(exchange: HttpServerExchange) {
-        exchange.addDefaultHeaders()
-        exchange.statusCode = 404
-        exchange.responseSender.send(
-            objectMapper.toJson(Responses.notFoundError)
-        )
+    override fun handleRequest(request: Request): HandlerResponse<ErrorObject> {
+        val errorId = UUID.randomUUID()
+        return HandlerResponse(
+            id = errorId,
+            statusCode = StatusCodes.NOT_FOUND,
+            body = Responses.notFoundError
+        ).also {
+            logger.debug { "Can't find path ${request.path}" }
+        }
     }
 }

@@ -4,12 +4,16 @@ import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange
 import io.undertow.util.HttpString
 import io.undertow.util.Methods
+import io.undertow.util.StatusCodes
 
 class CorsHandler(private val next: HttpHandler) : HttpHandler {
     override fun handleRequest(exchange: HttpServerExchange) {
-        if (Methods.OPTIONS.equals(exchange.requestMethod)) {
+        if (!Methods.OPTIONS.equals(exchange.requestMethod)) {
             throw BadRequestException(
-                Responses.badMethodError
+                HandlerResponse(
+                    statusCode = StatusCodes.BAD_REQUEST,
+                    body = Responses.badMethodError
+                )
             )
         } else {
             setCorsResponseHeaders(exchange)

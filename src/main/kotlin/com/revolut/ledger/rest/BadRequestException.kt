@@ -1,5 +1,5 @@
 package com.revolut.ledger.rest
 
 class BadRequestException(
-    val errorResponse: ErrorResponse
+    val errorResponse: HandlerResponse<ErrorObject>
 ) : Exception()

@@ -1,12 +1,13 @@
 package com.revolut.ledger.rest
 
-import io.undertow.server.HttpHandler
-import io.undertow.server.HttpServerExchange
+import com.revolut.ledger.model.Transaction
+import io.undertow.util.StatusCodes
+import java.util.UUID
 
-class OkHttpHandler : HttpHandler {
-    override fun handleRequest(exchange: HttpServerExchange) {
-        exchange.addDefaultHeaders()
-        exchange.statusCode = 200
-        exchange.responseSender.close()
-    }
+class OkHttpHandler : LedgerHandler<Transaction>() {
+    override fun handleRequest(request: Request) =
+        HandlerResponse(
+            statusCode = StatusCodes.OK,
+            body = Transaction(UUID.randomUUID())
+        )
 }

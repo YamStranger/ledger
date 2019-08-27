@@ -1,6 +1,6 @@
 package com.revolut.ledger.rest
 
-data class ErrorResponse(
+data class ErrorObject(
     val errorCode: Int,
     val errorDetails: String
 )
