@@ -1,20 +1,26 @@
 package com.revolut.ledger
 
+import com.google.inject.AbstractModule
 import com.google.inject.Guice.createInjector
 import com.google.inject.Injector
+import com.revolut.ledger.config.ConfigurationModule
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import dev.misfitlabs.kotlinguice4.getInstance
+import com.google.inject.util.Modules
 
 fun main() {
-    val loadedConfig = loadSystemEnvironmentProperties().withFallback(
-        ConfigFactory.load("default-settings.json")!!
-    )
-    startApp(loadedConfig)
+    startApp(loadConfig())
 }
 
-internal fun startApp(config: Config): Injector {
-    val injector: Injector = createInjector(ApplicationConfiguration(config))
+internal fun loadConfig(): Config {
+    return loadSystemEnvironmentProperties().withFallback(
+        ConfigFactory.load("default-settings.json")!!
+    )
+}
+
+internal fun startApp(config: Config, moduleOverrides: List<AbstractModule> = emptyList()): Injector {
+    val injector: Injector = createInjector(Modules.override(ConfigurationModule(config)).with(moduleOverrides))
     val application = injector.getInstance<Application>()
     Runtime.getRuntime().addShutdownHook(Thread {
         application.stop()

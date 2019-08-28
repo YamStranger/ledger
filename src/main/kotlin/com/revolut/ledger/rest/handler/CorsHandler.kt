@@ -11,7 +11,7 @@ import io.undertow.util.StatusCodes
 
 class CorsHandler(private val next: HttpHandler) : HttpHandler {
     override fun handleRequest(exchange: HttpServerExchange) {
-        if (!Methods.OPTIONS.equals(exchange.requestMethod)) {
+        if (Methods.OPTIONS.equals(exchange.requestMethod)) {
             throw BadRequestException(
                 HandlerResponse(
                     statusCode = StatusCodes.BAD_REQUEST,
