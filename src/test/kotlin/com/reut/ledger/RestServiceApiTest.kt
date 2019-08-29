@@ -26,7 +26,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 
 @TestInstance(PER_CLASS)
-class ApiTest {
+class RestServiceApiTest {
     private var injector: Injector = mockk()
     private var application: Application = mockk()
     private var testModule: RestMockModule = RestMockModule()
@@ -112,7 +112,7 @@ class ApiTest {
     }
 
     @Test
-    fun `returns error if account can't be found`() {
+    fun `returns error if handler returns error`() {
         val accountBalancePath = "/account/${UUID.randomUUID()}/balance"
         val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
             .httpGet()
