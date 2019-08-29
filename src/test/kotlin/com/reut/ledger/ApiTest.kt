@@ -93,7 +93,7 @@ class ApiTest {
 
     @Test
     fun `returns account balance`() {
-        val accountBalancePath = "/ledger/$accountA/balance"
+        val accountBalancePath = "/account/$accountA/balance"
         val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
             .httpGet()
             .responseObject<HttpResponse<AccountBalance>>()
@@ -113,7 +113,7 @@ class ApiTest {
 
     @Test
     fun `returns error if account can't be found`() {
-        val accountBalancePath = "/ledger/${UUID.randomUUID()}/balance"
+        val accountBalancePath = "/account/${UUID.randomUUID()}/balance"
         val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
             .httpGet()
             .responseObject<HttpResponse<ErrorObject>>()

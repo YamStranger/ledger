@@ -1,6 +1,7 @@
 package com.reut.ledger.rest
 
 import com.reut.ledger.rest.QueryParams.ACCOUNT_ID
+import com.reut.ledger.rest.QueryParams.TRANSACTION_ID
 import com.reut.ledger.rest.handler.HandlerFactory
 import io.undertow.Handlers
 import io.undertow.Undertow
@@ -19,8 +20,14 @@ class HttpServer @Inject constructor(
 
     fun start() {
         val routingHandler = Handlers.routing()
-        register(routingHandler, Methods.GET, "/ledger/{$ACCOUNT_ID}/balance",
+        register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/balance",
             handlerFactory.getAccountBalanceHandler())
+        register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/transactions",
+            handlerFactory.getAccountBalanceHandler())
+        register(routingHandler, Methods.POST, "/transaction",
+            handlerFactory.postTransactionHandler())
+        register(routingHandler, Methods.GET, "/transaction/{$TRANSACTION_ID}",
+            handlerFactory.postTransactionHandler())
         register(routingHandler, Methods.GET, "/*",
             handlerFactory.getCantFindHandler())
         server = Undertow.builder()

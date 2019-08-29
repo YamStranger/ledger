@@ -16,21 +16,20 @@ import javax.inject.Inject
 import mu.KotlinLogging
 
 class HandlerFactory @Inject constructor(
-    private val okHttpHandler: OkHttpHandler,
     private val cantFindHandler: CantFindHandler,
-    private val accountBalanceHandler: AccountBalanceHandler
+    private val accountBalanceHandler: AccountBalanceHandler,
+    private val postTransactionHandler: PostTransactionHandler
 ) {
     private val logger = KotlinLogging.logger {}
 
-    fun getOkHandler() = okHttpHandler.instrumented()
     fun getCantFindHandler() = cantFindHandler.instrumented()
     fun getAccountBalanceHandler() = accountBalanceHandler.instrumented()
+    fun postTransactionHandler() = postTransactionHandler.instrumented()
 
     private fun <T> LedgerHandler<T>.instrumented(): HttpHandler {
-        return BlockingHandler(Handlers.exceptionHandler(LedgerHttpHandler(this))
-            .addExceptionHandler(BadRequestException::class.java) { handleBadRequestException(it) }
-            .addExceptionHandler(Throwable::class.java) { handleUndefinedException(it) }
-            .addExceptionHandler(RuntimeException::class.java) { handleUndefinedException(it) })
+        return LedgerHttpHandler(this)
+            .withDefaults()
+            .asBlockingHandler()
     }
 
     private fun HttpHandler.withExceptionHandling() =
