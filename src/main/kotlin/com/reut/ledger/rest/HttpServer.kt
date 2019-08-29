@@ -23,11 +23,11 @@ class HttpServer @Inject constructor(
         register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/balance",
             handlerFactory.getAccountBalanceHandler())
         register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/transactions",
-            handlerFactory.getAccountBalanceHandler())
+            handlerFactory.getAccountTransactionsHandler())
         register(routingHandler, Methods.POST, "/transaction",
             handlerFactory.postTransactionHandler())
         register(routingHandler, Methods.GET, "/transaction/{$TRANSACTION_ID}",
-            handlerFactory.postTransactionHandler())
+            handlerFactory.getTransactionHandler())
         register(routingHandler, Methods.GET, "/*",
             handlerFactory.getCantFindHandler())
         server = Undertow.builder()
