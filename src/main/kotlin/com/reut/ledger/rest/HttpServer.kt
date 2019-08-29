@@ -1,5 +1,6 @@
 package com.reut.ledger.rest
 
+import com.reut.ledger.config.AppConfiguration
 import com.reut.ledger.rest.QueryParams.ACCOUNT_ID
 import com.reut.ledger.rest.QueryParams.TRANSACTION_ID
 import com.reut.ledger.rest.handler.HandlerFactory
@@ -13,12 +14,14 @@ import javax.inject.Inject
 import mu.KotlinLogging
 
 class HttpServer @Inject constructor(
-    private val handlerFactory: HandlerFactory
+    private val handlerFactory: HandlerFactory,
+    private val appConfiguration: AppConfiguration
 ) {
     private val logger = KotlinLogging.logger {}
     private var server: Undertow? = null
 
     fun start() {
+        logger.info { "Starting rest service with config: ${appConfiguration.httpServerConfiguration}" }
         val routingHandler = Handlers.routing()
         register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/balance",
             handlerFactory.getAccountBalanceHandler())
@@ -30,10 +33,12 @@ class HttpServer @Inject constructor(
             handlerFactory.getTransactionHandler())
         register(routingHandler, Methods.GET, "/*",
             handlerFactory.getCantFindHandler())
-        server = Undertow.builder()
-            .addHttpListener(8081, "127.0.0.1")
-            .setHandler(routingHandler)
-            .build()
+        server = with(appConfiguration.httpServerConfiguration) {
+            Undertow.builder()
+                .addHttpListener(port, host)
+                .setHandler(routingHandler)
+                .build()
+        }
         server!!.start()
     }
 

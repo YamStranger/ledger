@@ -20,7 +20,7 @@ import java.util.UUID
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
@@ -34,8 +34,7 @@ class RestServiceApiTest {
     private var rootPath: String = ""
     private val accountA = UUID.randomUUID()
 
-    @BeforeAll
-    fun init() {
+    init {
         val config = loadConfig().withValue(
             SERVER_HTTP_PORT, ConfigValueFactory.fromAnyRef(findFreePort())
         )
@@ -44,7 +43,10 @@ class RestServiceApiTest {
         application = startApp(injector)
         serverConfiguration = injector.getInstance()
         rootPath = "http://${serverConfiguration.host}:${serverConfiguration.port}"
+    }
 
+    @BeforeEach
+    fun init() {
         every {
             testModule.cantFindHandler.handleRequest(any())
         } returns TestResponses.notFoundError

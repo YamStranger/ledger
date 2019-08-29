@@ -11,12 +11,14 @@ class ConfigurationModule(private val config: Config) : KotlinModule() {
     }
 
     override fun configure() {
+        val httpServerConfiguration = HttpServerConfiguration(
+            port = config.getInt(SERVER_HTTP_PORT),
+            host = config.getString(SERVER_HTTP_HOST)
+        )
         bind<AppConfiguration>().toInstance(AppConfiguration(
             appName = config.getString(LOCAL_SERVER_NAME),
-            httpServerConfiguration = HttpServerConfiguration(
-                port = config.getInt(SERVER_HTTP_PORT),
-                host = config.getString(SERVER_HTTP_HOST)
-            )
+            httpServerConfiguration = httpServerConfiguration
         ))
+        bind<HttpServerConfiguration>().toInstance(httpServerConfiguration)
     }
 }
