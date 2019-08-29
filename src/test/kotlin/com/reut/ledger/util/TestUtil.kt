@@ -1,23 +1,24 @@
-package com.reut.ledger
+package com.reut.ledger.util
 
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
+import com.github.kittinunf.fuel.gson.responseObject
 import com.github.kittinunf.result.Result
 import com.reut.ledger.rest.JsonUtil
 import java.io.IOException
 import java.net.ServerSocket
 
-inline fun <reified T : Any> Triple<Request, Response, Result<T, FuelError>>.extractErrorIfExists(): Triple<Response, T?, FuelError?> {
-    val error = this.third.component2()
-    val parsedBody = this.third.component1() ?: let {
-        val data = this.second.data
+inline fun <reified T : Any> Request.execute(): Triple<Response, T?, FuelError?> {
+    val (_, response, result) = this.responseObject<T>()
+    val error = result.component2()
+    val parsedBody = result.component1() ?: let {
+        val data = response.data
         if (data.isNotEmpty()) {
             JsonUtil.deserialize<T>(String(data))
         } else null
     }
-
-    return Triple(this.second, parsedBody, error)
+    return Triple(response, parsedBody, error)
 }
 
 fun findFreePort(): Int {

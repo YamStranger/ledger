@@ -1,6 +1,5 @@
 package com.reut.ledger
 
-import com.github.kittinunf.fuel.gson.responseObject
 import com.github.kittinunf.fuel.httpGet
 import com.google.inject.Injector
 import com.reut.ledger.config.ConfigurationModule.Companion.SERVER_HTTP_PORT
@@ -10,6 +9,10 @@ import com.reut.ledger.rest.QueryParams
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.ErrorObject
 import com.reut.ledger.rest.response.HttpResponse
+import com.reut.ledger.util.RestMockModule
+import com.reut.ledger.util.TestResponses
+import com.reut.ledger.util.execute
+import com.reut.ledger.util.findFreePort
 import com.typesafe.config.ConfigValueFactory
 import dev.misfitlabs.kotlinguice4.getInstance
 import io.mockk.clearAllMocks
@@ -20,11 +23,16 @@ import java.util.UUID
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 
+/**
+ * This test created to validate that rest requests processed correctly and passed to handlers correctly.
+ * It mocks handlers, and tests only rest server implementation.
+ */
 @TestInstance(PER_CLASS)
 class RestServiceApiTest {
     private var injector: Injector = mockk()
@@ -46,24 +54,8 @@ class RestServiceApiTest {
     }
 
     @BeforeEach
-    fun init() {
-        every {
-            testModule.cantFindHandler.handleRequest(any())
-        } returns TestResponses.notFoundError
-
-        every {
-            testModule.accountBalanceHandler.handleRequest(match {
-                accountA.toString().equals(it.queryParams[QueryParams.ACCOUNT_ID])
-            })
-        } returns TestResponses.accountBalance
-
-        every {
-            testModule.accountBalanceHandler.handleRequest(match {
-                !accountA.toString().equals(it.queryParams[QueryParams.ACCOUNT_ID])
-            })
-        } throws BadRequestException(
-            TestResponses.notFoundError
-        )
+    fun clearMocks() {
+        testModule.clearMocks()
     }
 
     @AfterAll
@@ -72,13 +64,18 @@ class RestServiceApiTest {
         clearAllMocks()
     }
 
+    /**
+     * Test for register(routingHandler, Methods.GET, "*", handlerFactory.getCantFindHandler())
+     */
     @Test
     fun `responses with not found error for unknown path`() {
+        every {
+            testModule.cantFindHandler.handleRequest(any())
+        } returns TestResponses.notFoundError
         val randomPath = "/my/random/path"
         val (fuelResponse, response, _) = "$rootPath$randomPath"
             .httpGet()
-            .responseObject<HttpResponse<ErrorObject>>()
-            .extractErrorIfExists()
+            .execute<HttpResponse<ErrorObject>>()
 
         assertNotNull(response)
 
@@ -94,12 +91,46 @@ class RestServiceApiTest {
     }
 
     @Test
-    fun `returns account balance`() {
+    fun `returns error if handler returns error`() {
+        every {
+            testModule.accountBalanceHandler.handleRequest(match {
+                accountA.toString().equals(it.queryParams[QueryParams.ACCOUNT_ID])
+            })
+        } throws BadRequestException(
+            TestResponses.notFoundError
+        )
+
         val accountBalancePath = "/account/$accountA/balance"
         val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
             .httpGet()
-            .responseObject<HttpResponse<AccountBalance>>()
-            .extractErrorIfExists()
+            .execute<HttpResponse<ErrorObject>>()
+
+        assertNotNull(response)
+        verify(exactly = 1) {
+            testModule.accountBalanceHandler.handleRequest(match {
+                it.path == accountBalancePath &&
+                    !it.queryParams[QueryParams.ACCOUNT_ID].isNullOrEmpty()
+            })
+        }
+
+        assertEquals(TestResponses.notFoundError.statusCode, fuelResponse.statusCode)
+        assertEquals(TestResponses.notFoundError.body, response!!.body)
+    }
+
+    /**
+     * Test for register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/balance", handlerFactory.getAccountBalanceHandler())
+     */
+    @Test
+    fun `returns account balance`() {
+        every {
+            testModule.accountBalanceHandler.handleRequest(match {
+                accountA.toString().equals(it.queryParams[QueryParams.ACCOUNT_ID])
+            })
+        } returns TestResponses.accountBalance
+        val accountBalancePath = "/account/$accountA/balance"
+        val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
+            .httpGet()
+            .execute<HttpResponse<AccountBalance>>()
 
         assertNotNull(response)
         verify(exactly = 1) {
@@ -113,23 +144,27 @@ class RestServiceApiTest {
         assertEquals(TestResponses.accountBalance.body, response!!.body)
     }
 
+    /**
+     * Test for register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/transactions", handlerFactory.getAccountTransactionsHandler())
+     */
     @Test
-    fun `returns error if handler returns error`() {
-        val accountBalancePath = "/account/${UUID.randomUUID()}/balance"
-        val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
-            .httpGet()
-            .responseObject<HttpResponse<ErrorObject>>()
-            .extractErrorIfExists()
+    fun `returns account transactions`() {
+        fail<Unit>("")
+    }
 
-        assertNotNull(response)
-        verify(exactly = 1) {
-            testModule.accountBalanceHandler.handleRequest(match {
-                it.path == accountBalancePath &&
-                    !it.queryParams[QueryParams.ACCOUNT_ID].isNullOrEmpty()
-            })
-        }
+    /**
+     * Test for register(routingHandler, Methods.POST, "/transaction", handlerFactory.postTransactionHandler())
+     */
+    @Test
+    fun `accepts transaction request`() {
+        fail<Unit>("")
+    }
 
-        assertEquals(TestResponses.notFoundError.statusCode, fuelResponse.statusCode)
-        assertEquals(TestResponses.notFoundError.body, response!!.body)
+    /**
+     * Test for     register(routingHandler, Methods.GET, "/transaction/{$TRANSACTION_ID}", handlerFactory.getTransactionHandler())
+     */
+    @Test
+    fun `returns transaction`() {
+        fail<Unit>("")
     }
 }

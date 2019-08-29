@@ -1,4 +1,4 @@
-package com.reut.ledger
+package com.reut.ledger.util
 
 import com.reut.ledger.model.AccountBalance
 import com.reut.ledger.model.Currency
