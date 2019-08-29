@@ -19,4 +19,20 @@ To create account, you need add transaction from *Genesis* account to your accou
 
 # Run application
 
+# Developing application
+Branch name conversion: JIRA-ISSUE1/{feat,chore,test}/name_of_feature
+Commit name conversion: [link](https://gist.github.com/stephenparish/9941e89d80e2bc58a153#format-of-the-commit-message)
+
+Releases description example:
+
+```
+Tag 1.0.0
+
+Summary: Some important features
+
+Change log: link
+
+Changes generated with https://www.npmjs.com/package/git-changelog
+```
+
 
