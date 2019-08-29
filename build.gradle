@@ -32,9 +32,9 @@ configurations.all {
     }
 }
 
-compileKotlin {
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
         allWarningsAsErrors = true
     }
 }
@@ -89,6 +89,6 @@ dependencies {
 shadowJar {
     minimize()
     manifest {
-        attributes 'Main-Class': 'com.revolut.ledger.MainKt'
+        attributes 'Main-Class': 'com.reut.ledger.MainKt'
     }
 }
