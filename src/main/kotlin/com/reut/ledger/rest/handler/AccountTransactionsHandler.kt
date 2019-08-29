@@ -8,7 +8,7 @@ import com.reut.ledger.rest.response.HandlerResponse
 import io.undertow.util.StatusCodes
 import java.util.UUID
 
-class GetAccountTransactionsHandler : LedgerHandler<AccountTransactions> {
+class AccountTransactionsHandler : LedgerHandler<AccountTransactions> {
     override fun handleRequest(request: Request) =
         HandlerResponse(
             statusCode = StatusCodes.OK,

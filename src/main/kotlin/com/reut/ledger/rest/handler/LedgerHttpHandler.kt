@@ -2,7 +2,7 @@ package com.reut.ledger.rest.handler
 
 import com.reut.ledger.rest.JsonUtil.serialize
 import com.reut.ledger.rest.JsonUtil.toJson
-import com.reut.ledger.rest.QueryParams
+import com.reut.ledger.rest.QueryParam
 import com.reut.ledger.rest.Request
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.HttpResponse
@@ -27,11 +27,11 @@ class LedgerHttpHandler<T>(private val coreHandler: LedgerHandler<T>) : HttpHand
             ))))
     }
 
-    private fun extractQueryParams(pathParams: Map<String, Deque<String>>): Map<QueryParams, String> {
+    private fun extractQueryParams(pathParams: Map<String, Deque<String>>): Map<QueryParam, String> {
         return try {
             pathParams.mapNotNull {
                 if (it.value.isNotEmpty() && it.key != "*") {
-                    QueryParams.valueOf(it.key) to it.value.first
+                    QueryParam.valueOf(it.key) to it.value.first
                 } else {
                     null
                 }

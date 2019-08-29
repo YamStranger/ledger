@@ -1,6 +1,6 @@
 package com.reut.ledger.rest
 
-enum class QueryParams {
+enum class QueryParam {
     ACCOUNT_ID,
     TRANSACTION_ID
 }

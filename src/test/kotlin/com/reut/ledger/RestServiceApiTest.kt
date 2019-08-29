@@ -1,13 +1,18 @@
 package com.reut.ledger
 
+import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
 import com.google.inject.Injector
 import com.reut.ledger.config.ConfigurationModule.Companion.SERVER_HTTP_PORT
 import com.reut.ledger.config.HttpServerConfiguration
 import com.reut.ledger.model.AccountBalance
-import com.reut.ledger.rest.QueryParams
+import com.reut.ledger.model.AccountTransactions
+import com.reut.ledger.model.Transaction
+import com.reut.ledger.rest.QueryParam
+import com.reut.ledger.rest.handler.LedgerHandler
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.ErrorObject
+import com.reut.ledger.rest.response.HandlerResponse
 import com.reut.ledger.rest.response.HttpResponse
 import com.reut.ledger.util.RestMockModule
 import com.reut.ledger.util.TestResponses
@@ -40,7 +45,8 @@ class RestServiceApiTest {
     private var testModule: RestMockModule = RestMockModule()
     private var serverConfiguration: HttpServerConfiguration = mockk()
     private var rootPath: String = ""
-    private val accountA = UUID.randomUUID()
+    private val accountId = UUID.randomUUID()
+    private val transactionId = UUID.randomUUID()
 
     init {
         val config = loadConfig().withValue(
@@ -94,27 +100,26 @@ class RestServiceApiTest {
     fun `returns error if handler returns error`() {
         every {
             testModule.accountBalanceHandler.handleRequest(match {
-                accountA.toString().equals(it.queryParams[QueryParams.ACCOUNT_ID])
+                accountId.toString() == it.queryParams[QueryParam.ACCOUNT_ID]
             })
         } throws BadRequestException(
             TestResponses.notFoundError
         )
 
-        val accountBalancePath = "/account/$accountA/balance"
+        val accountBalancePath = "/account/$accountId/balance"
         val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
             .httpGet()
             .execute<HttpResponse<ErrorObject>>()
 
-        assertNotNull(response)
-        verify(exactly = 1) {
-            testModule.accountBalanceHandler.handleRequest(match {
-                it.path == accountBalancePath &&
-                    !it.queryParams[QueryParams.ACCOUNT_ID].isNullOrEmpty()
-            })
-        }
-
-        assertEquals(TestResponses.notFoundError.statusCode, fuelResponse.statusCode)
-        assertEquals(TestResponses.notFoundError.body, response!!.body)
+        validateResponse(
+            mockedHandler = testModule.accountBalanceHandler,
+            fuelResponse = fuelResponse,
+            response = response,
+            mockedResponse = TestResponses.notFoundError,
+            queryParam = QueryParam.ACCOUNT_ID,
+            queryParamValue = accountId.toString(),
+            path = accountBalancePath
+        )
     }
 
     /**
@@ -124,24 +129,23 @@ class RestServiceApiTest {
     fun `returns account balance`() {
         every {
             testModule.accountBalanceHandler.handleRequest(match {
-                accountA.toString().equals(it.queryParams[QueryParams.ACCOUNT_ID])
+                accountId.toString() == it.queryParams[QueryParam.ACCOUNT_ID]
             })
         } returns TestResponses.accountBalance
-        val accountBalancePath = "/account/$accountA/balance"
+        val accountBalancePath = "/account/$accountId/balance"
         val (fuelResponse, response, _) = "$rootPath$accountBalancePath"
             .httpGet()
             .execute<HttpResponse<AccountBalance>>()
 
-        assertNotNull(response)
-        verify(exactly = 1) {
-            testModule.accountBalanceHandler.handleRequest(match {
-                it.path == accountBalancePath &&
-                    it.queryParams[QueryParams.ACCOUNT_ID] == accountA.toString()
-            })
-        }
-
-        assertEquals(TestResponses.accountBalance.statusCode, fuelResponse.statusCode)
-        assertEquals(TestResponses.accountBalance.body, response!!.body)
+        validateResponse(
+            mockedHandler = testModule.accountBalanceHandler,
+            fuelResponse = fuelResponse,
+            mockedResponse = TestResponses.accountBalance,
+            response = response,
+            queryParam = QueryParam.ACCOUNT_ID,
+            queryParamValue = accountId.toString(),
+            path = accountBalancePath
+        )
     }
 
     /**
@@ -149,7 +153,25 @@ class RestServiceApiTest {
      */
     @Test
     fun `returns account transactions`() {
-        fail<Unit>("")
+        every {
+            testModule.accountTransactionsHandler.handleRequest(match {
+                accountId.toString() == it.queryParams[QueryParam.ACCOUNT_ID]
+            })
+        } returns TestResponses.accountTransactions
+        val accountTransactionsPath = "/account/$accountId/transactions"
+        val (fuelResponse, response, _) = "$rootPath$accountTransactionsPath"
+            .httpGet()
+            .execute<HttpResponse<AccountTransactions>>()
+
+        validateResponse(
+            mockedHandler = testModule.accountTransactionsHandler,
+            fuelResponse = fuelResponse,
+            response = response,
+            mockedResponse = TestResponses.accountTransactions,
+            queryParam = QueryParam.ACCOUNT_ID,
+            queryParamValue = accountId.toString(),
+            path = accountTransactionsPath
+        )
     }
 
     /**
@@ -161,10 +183,49 @@ class RestServiceApiTest {
     }
 
     /**
-     * Test for     register(routingHandler, Methods.GET, "/transaction/{$TRANSACTION_ID}", handlerFactory.getTransactionHandler())
+     * Test for register(routingHandler, Methods.GET, "/transaction/{$TRANSACTION_ID}", handlerFactory.getTransactionHandler())
      */
     @Test
     fun `returns transaction`() {
-        fail<Unit>("")
+        every {
+            testModule.transactionHandler.handleRequest(match {
+                transactionId.toString() == it.queryParams[QueryParam.TRANSACTION_ID]
+            })
+        } returns TestResponses.transaction
+        val transactionPath = "/transaction/$transactionId"
+        val (fuelResponse, response, _) = "$rootPath$transactionPath"
+            .httpGet()
+            .execute<HttpResponse<Transaction>>()
+
+        validateResponse(
+            mockedHandler = testModule.transactionHandler,
+            fuelResponse = fuelResponse,
+            response = response,
+            mockedResponse = TestResponses.transaction,
+            queryParam = QueryParam.TRANSACTION_ID,
+            queryParamValue = transactionId.toString(),
+            path = transactionPath
+        )
+    }
+
+    private fun <T> validateResponse(
+        fuelResponse: Response,
+        response: HttpResponse<*>?,
+        mockedResponse: HandlerResponse<*>,
+        mockedHandler: LedgerHandler<T>,
+        queryParam: QueryParam,
+        queryParamValue: String,
+        path: String
+    ) {
+        assertNotNull(response)
+        verify(exactly = 1) {
+            mockedHandler.handleRequest(match {
+                it.path == path &&
+                    it.queryParams[queryParam] == queryParamValue
+            })
+        }
+
+        assertEquals(fuelResponse.statusCode, fuelResponse.statusCode)
+        assertEquals(mockedResponse.body, response!!.body)
     }
 }

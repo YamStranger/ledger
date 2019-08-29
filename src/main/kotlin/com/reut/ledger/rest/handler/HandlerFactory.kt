@@ -18,17 +18,17 @@ import mu.KotlinLogging
 class HandlerFactory @Inject constructor(
     private val cantFindHandler: CantFindHandler,
     private val accountBalanceHandler: AccountBalanceHandler,
-    private val postTransactionHandler: PostTransactionHandler,
-    private val getTransactionHandler: GetTransactionHandler,
-    private val getAccountTransactionsHandler: GetAccountTransactionsHandler
+    private val postTransactionHandler: CreateTransactionHandler,
+    private val transactionHandler: TransactionHandler,
+    private val accountTransactionsHandler: AccountTransactionsHandler
 ) {
     private val logger = KotlinLogging.logger {}
 
     fun getCantFindHandler() = cantFindHandler.instrumented()
     fun getAccountBalanceHandler() = accountBalanceHandler.instrumented()
     fun postTransactionHandler() = postTransactionHandler.instrumented()
-    fun getTransactionHandler() = getTransactionHandler.instrumented()
-    fun getAccountTransactionsHandler() = getAccountTransactionsHandler.instrumented()
+    fun getTransactionHandler() = transactionHandler.instrumented()
+    fun getAccountTransactionsHandler() = accountTransactionsHandler.instrumented()
 
     private fun <T> LedgerHandler<T>.instrumented(): HttpHandler {
         return LedgerHttpHandler(this)
