@@ -191,7 +191,6 @@ class RestServiceApiTest {
             .body(JsonUtil.serialize(TestRequests.transaction))
             .execute<HttpResponse<TransactionConfirmation>>()
 
-
         assertNotNull(response)
 
         verify(exactly = 1) {

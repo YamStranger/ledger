@@ -5,7 +5,7 @@ import java.util.UUID
 
 object ResponsesFactory {
     fun getNotFoundError() = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.NOT_FOUND,
         body = ErrorObject(
             errorCode = 0,
@@ -14,7 +14,7 @@ object ResponsesFactory {
     )
 
     fun getBadMethodError() = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.BAD_REQUEST,
         body = ErrorObject(
             errorCode = 1,
@@ -23,7 +23,7 @@ object ResponsesFactory {
     )
 
     fun getBadPathParameterError() = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.BAD_REQUEST,
         body = ErrorObject(
             errorCode = 2,

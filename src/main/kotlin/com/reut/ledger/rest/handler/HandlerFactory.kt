@@ -55,7 +55,7 @@ class HandlerFactory @Inject constructor(
         exchange.statusCode = exception.errorResponse.statusCode
         exchange.responseSender.send(
             serialize(HttpResponse(
-                id = exception.errorResponse.id,
+                requestId = exception.errorResponse.requestId,
                 body = exception.errorResponse.body
             ))
         )
@@ -68,7 +68,7 @@ class HandlerFactory @Inject constructor(
         logger.error(exception) { "undefinedException: $errorId" }
         exchange.responseSender.send(
             serialize(HttpResponse(
-                id = errorId,
+                requestId = errorId,
                 body = ErrorObject(
                     errorCode = 0,
                     errorDetails = "Internal Error")

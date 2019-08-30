@@ -1,8 +1,8 @@
 package com.reut.ledger.rest.handler
 
+import com.reut.ledger.model.AccountTransactions
 import com.reut.ledger.model.Currency
 import com.reut.ledger.model.Transaction
-import com.reut.ledger.model.AccountTransactions
 import com.reut.ledger.rest.Request
 import com.reut.ledger.rest.response.HandlerResponse
 import io.undertow.util.StatusCodes
@@ -14,6 +14,7 @@ class AccountTransactionsHandler : LedgerHandler<Unit, AccountTransactions> {
             statusCode = StatusCodes.OK,
             body = AccountTransactions(
                 transactions = listOf(Transaction(
+                    id = UUID.randomUUID(),
                     from = UUID.randomUUID(),
                     to = UUID.randomUUID(),
                     fromCurrency = Currency.GBP,

@@ -12,7 +12,7 @@ import java.util.UUID
 
 object TestResponses {
     val notFoundError = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.NOT_FOUND,
         body = ErrorObject(
             errorCode = 0,
@@ -21,7 +21,7 @@ object TestResponses {
     )
 
     val accountBalance = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = AccountBalance(
             accountId = UUID.randomUUID(),
@@ -31,7 +31,7 @@ object TestResponses {
     )
 
     val transactionConfirmation = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = TransactionConfirmation(
             transactionId = UUID.randomUUID()
@@ -39,9 +39,10 @@ object TestResponses {
     )
 
     val transaction = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = Transaction(
+            id = UUID.randomUUID(),
             from = UUID.randomUUID(),
             to = UUID.randomUUID(),
             fromCurrency = Currency.GBP,
@@ -51,11 +52,12 @@ object TestResponses {
     )
 
     val accountTransactions = HandlerResponse(
-        id = UUID.randomUUID(),
+        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = AccountTransactions(
             transactions = listOf(
                 Transaction(
+                    id = UUID.randomUUID(),
                     from = UUID.randomUUID(),
                     to = UUID.randomUUID(),
                     fromCurrency = Currency.GBP,

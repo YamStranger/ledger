@@ -11,7 +11,7 @@ class CantFindHandler : LedgerHandler<Unit, ErrorObject> {
 
     override fun handleRequest(request: Request<Unit>): HandlerResponse<ErrorObject> {
         return ResponsesFactory.getNotFoundError().also {
-            logger.debug { "Can't find path ${request.path}, errorId = ${it.id}" }
+            logger.debug { "Can't find path ${request.path}, errorId = ${it.requestId}" }
         }
     }
 

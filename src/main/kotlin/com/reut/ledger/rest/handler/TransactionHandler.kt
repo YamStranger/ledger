@@ -12,6 +12,7 @@ class TransactionHandler : LedgerHandler<Unit, Transaction> {
         HandlerResponse(
             statusCode = StatusCodes.OK,
             body = Transaction(
+                id = UUID.randomUUID(),
                 from = UUID.randomUUID(),
                 to = UUID.randomUUID(),
                 fromCurrency = Currency.GBP,

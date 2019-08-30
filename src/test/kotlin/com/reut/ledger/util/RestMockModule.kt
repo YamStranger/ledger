@@ -1,6 +1,6 @@
 package com.reut.ledger.util
 
-import com.reut.ledger.model.Transaction
+import com.reut.ledger.model.CreateTransactionRequest
 import com.reut.ledger.rest.handler.AccountBalanceHandler
 import com.reut.ledger.rest.handler.AccountTransactionsHandler
 import com.reut.ledger.rest.handler.CantFindHandler
@@ -29,7 +29,7 @@ class RestMockModule : KotlinModule() {
         every { accountBalanceHandler.getBodyClass() } returns Unit.javaClass
         every { accountTransactionsHandler.getBodyClass() } returns Unit.javaClass
         every { transactionHandler.getBodyClass() } returns Unit.javaClass
-        every { createTransactionHandler.getBodyClass() } returns Transaction::class.java
+        every { createTransactionHandler.getBodyClass() } returns CreateTransactionRequest::class.java
     }
 
     fun clearMocks() {

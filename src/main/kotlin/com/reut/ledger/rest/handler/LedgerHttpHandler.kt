@@ -1,6 +1,5 @@
 package com.reut.ledger.rest.handler
 
-import com.google.gson.reflect.TypeToken
 import com.reut.ledger.rest.JsonUtil
 import com.reut.ledger.rest.JsonUtil.serialize
 import com.reut.ledger.rest.QueryParam
@@ -35,7 +34,7 @@ class LedgerHttpHandler<M, T>(private val coreHandler: LedgerHandler<M, T>) : Ht
             exch.statusCode = response.statusCode
             exch.responseSender.send(
                 serialize(HttpResponse(
-                    id = response.id,
+                    requestId = response.requestId,
                     body = response.body
                 )))
         }, Charset.forName("UTF-8"))
