@@ -19,6 +19,7 @@ Used tech:
 - Kotlin is used as language: [link](https://kotlinlang.org/)
 - Undertow is used as Rest server: [link](http://undertow.io/)
 - Logback is used for Logging
+- Fat jars created with Shadow plugin: [link](https://github.com/johnrengelman/shadow)
 
 To avoid dependencies problems gradle in mode `resolutionStrategy { failOnVersionConflict() }` is used.
 
