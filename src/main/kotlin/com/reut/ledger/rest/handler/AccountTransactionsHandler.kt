@@ -28,7 +28,4 @@ class AccountTransactionsHandler @Inject constructor(
             )
         )
     }
-
-    // FIXME find better way to describe body type
-    override fun getBodyClass(): Class<Unit> = Unit.javaClass
 }

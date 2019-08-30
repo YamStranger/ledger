@@ -9,7 +9,4 @@ class CantFindHandler : LedgerHandler<Unit, ErrorObject> {
     override fun handleRequest(request: Request<Unit>): HandlerResponse<ErrorObject> {
         return ResponsesFactory.getNotFoundError()
     }
-
-    // FIXME find better way to describe body type
-    override fun getBodyClass(): Class<Unit> = Unit.javaClass
 }

@@ -5,7 +5,4 @@ import com.reut.ledger.rest.response.HandlerResponse
 
 interface LedgerHandler<M, T> {
     fun handleRequest(request: Request<M>): HandlerResponse<T>
-
-    // FIXME find better way to describe body type
-    fun getBodyClass(): Class<M>
 }

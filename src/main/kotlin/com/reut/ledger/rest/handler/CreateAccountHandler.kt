@@ -18,7 +18,4 @@ class CreateAccountHandler @Inject constructor(
             )
         )
     }
-
-    // FIXME find better way to describe body type
-    override fun getBodyClass() = Unit::class.java
 }

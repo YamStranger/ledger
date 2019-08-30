@@ -24,13 +24,13 @@ class LedgerHttpHandler<M, T>(private val coreHandler: LedgerHandler<M, T>) : Ht
         val receiver = exchange.requestReceiver
         receiver.setMaxBufferSize(1024 * 100)
         receiver.receiveFullString({ exch, message ->
-            val request: Request<M> = Request(
+            val request = Request(
                 requestId = requestId,
                 path = exchange.requestPath,
                 body = message?.let {
                     // FIXME we should find better way to deserialize body for handler
-                    val bodyClass = coreHandler.getBodyClass()
-                    if (bodyClass != Unit.javaClass) {
+                    val bodyClass = DeserializationConfigHelper.getBodyByHandler(coreHandler)
+                    if (bodyClass != null) {
                         JsonUtil.deserialize(message, bodyClass)
                     } else {
                         null
