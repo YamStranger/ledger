@@ -4,7 +4,6 @@ import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantReadWriteLock
 
 fun <T> withAccountsLock(
     times: Int = 10,
@@ -18,9 +17,6 @@ fun <T> withAccountsLock(
     if (times <= 0) {
         throw FiledToObtainLock("Can't obtain lock for accounts $listAccountKeys")
     }
-    val a = ReentrantReadWriteLock()
-    a.writeLock().tryLock(lockWait.toMillis(), TimeUnit.MILLISECONDS)
-    a.readLock().tryLock(lockWait.toMillis(), TimeUnit.MILLISECONDS)
 
     val locks: List<Lock> = if (readOnly) {
         listAccountKeys.map {

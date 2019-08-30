@@ -6,7 +6,6 @@ import com.reut.ledger.core.LedgerService.Companion.expenseAccountId
 import com.reut.ledger.core.LedgerService.Companion.incomeAccountId
 import com.reut.ledger.model.Currency
 import java.util.UUID
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -15,21 +14,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
-import java.util.concurrent.Executors
 
 @TestInstance(PER_CLASS)
 class InMemoryLedgerServiceTest {
     private var ledgerService = InMemoryLedgerService()
-    private val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 
     @BeforeEach
     fun clearMocks() {
         ledgerService = InMemoryLedgerService()
-    }
-
-    @AfterAll
-    fun stop() {
-        executor.shutdownNow()
     }
 
     @Test

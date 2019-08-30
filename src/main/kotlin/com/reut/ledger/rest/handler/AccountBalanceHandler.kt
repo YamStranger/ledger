@@ -3,7 +3,6 @@ package com.reut.ledger.rest.handler
 import com.reut.ledger.core.LedgerService
 import com.reut.ledger.core.toUUIDorNull
 import com.reut.ledger.model.AccountBalance
-import com.reut.ledger.model.Currency
 import com.reut.ledger.rest.QueryParam.ACCOUNT_ID
 import com.reut.ledger.rest.Request
 import com.reut.ledger.rest.response.BadRequestException
