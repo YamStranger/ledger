@@ -1,6 +1,6 @@
 ## General info
 This repo has simple implementation of ledger.
-Ledger supports transaction model based on accounts. Account balances not allowed to go below 0.
+Ledger supports transactional model with accounts. Account balances not allowed to go below 0.
 There is no double used for money operations, all math done in minor units.
 
 In future only Long and Scale will be used to represent different
@@ -10,7 +10,7 @@ currencies. Currently only one currency is used and all api build around minor u
 Each account can hold balances in different currencies. Transfers are supported only between same balances.
 To convert one currency to other currency user should do exchange operation.
 
-Api supports currency, but only one currency actually allowed right now - GBP.
+Api supports currency, but only one currency is actually allowed right now - GBP.
 
 Used tech:
 - Ktlint is used as Code Style tool: [link](https://ktlint.github.io/)
@@ -24,12 +24,12 @@ Used tech:
 - Logback is used for Logging
 - Fat jars created with Shadow plugin: [link](https://github.com/johnrengelman/shadow)
 
-To avoid dependencies problems gradle in mode `resolutionStrategy { failOnVersionConflict() }` is used.
+To avoid dependencies problems gradle is used in mode `resolutionStrategy { failOnVersionConflict() }`.
 
 ## Balances
 By default only one account exists: `00000000-0000-0000-0000-000000000001`(*Genesis*) with infinite balance.
 
-Others account can be created by doing transaction from *Genesis* account to your account.
+Others account can be created by creating transaction from *Genesis* account to user account.
 
 Transfers between accounts can be done, but only till their balance is > 0.
 
@@ -45,13 +45,13 @@ account will be created, and one transaction will be stored for this account.
 7. Create transaction to transfer money from `00000000-0000-0000-0000-000000000002` to `00000000-0000-0000-0000-000000000003`
 8. Both balances are changed
 
-Please do this operations from swagger, based on `Api Documentation`.
+Please do this operations from swagger site/editor, based on `Api Documentation`.
 
 ## Build application
-Local gradlew is used. So to build server you need only run command form project rule
+Local gradlew is used. So to build server you need only run command from project root
 `./gradlew clean shadowJar`
 
-This will build project and will prepare runnable in dir `build/libs/` with name `reut-ledger-0.0.1-all.jar`
+This will build project and prepare runnable in dir `./build/libs/` with name `reut-ledger-0.0.1-all.jar`
 
 P.S. you can simply execute `./build.sh`
 
