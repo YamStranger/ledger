@@ -27,8 +27,6 @@ class HttpServer @Inject constructor(
             handlerFactory.postCreateAccountHandler())
         register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/balance",
             handlerFactory.getAccountBalanceHandler())
-        register(routingHandler, Methods.PUT, "/account/{$ACCOUNT_ID}",
-            handlerFactory.postTransactionHandler())
         register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/transactions",
             handlerFactory.getAccountTransactionsHandler())
         register(routingHandler, Methods.POST, "/transaction",

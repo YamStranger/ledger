@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.RepeatedTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 
@@ -36,8 +36,8 @@ class ConcurrentLedgerServiceTest {
         executor.shutdownNow()
     }
 
-    @RepeatedTest(2)
-    fun `calculates balance correctly when used with several threads`() {
+    @Test
+    fun `calculates balance correctly when ledger used with several threads`() {
         val accounts = 0.rangeTo(accountsCount).map { ledgerService.createAccount() }.toList()
 
         accounts.forEach { account ->
@@ -69,9 +69,12 @@ class ConcurrentLedgerServiceTest {
 
         val errors = AtomicInteger(0)
         val runs = AtomicInteger(0)
+
+        // make sure that we scheduled all threads, but they will start at same time
         val finish = CountDownLatch(transactions.size)
         val start = Semaphore(Int.MAX_VALUE)
         start.acquire(Int.MAX_VALUE)
+
         val random = ThreadLocalRandom.current()
         do {
             val index = random.nextInt(transactions.size)
@@ -97,8 +100,12 @@ class ConcurrentLedgerServiceTest {
                 }
             }
         } while (transactions.isNotEmpty())
+
+        // start all threads and wait till all of them will finish
         start.release(Int.MAX_VALUE)
         finish.await()
+
+
         assertEquals(0, errors.get())
         assertEquals(accountsCount * 2 * rounds + 1, ledgerService.listTransactions(accounts.first())!!.size)
         accounts.forEach { account ->
@@ -106,5 +113,6 @@ class ConcurrentLedgerServiceTest {
                 ?: throw IllegalStateException("Can't find balance")
             assertEquals(initialDeposit, balance.balances[Currency.GBP])
         }
+
     }
 }
