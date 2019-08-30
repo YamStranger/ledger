@@ -1,4 +1,4 @@
-package com.reut.ledger.core
+package com.reut.ledger.model
 
 import java.util.UUID
 

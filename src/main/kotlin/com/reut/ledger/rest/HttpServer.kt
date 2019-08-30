@@ -1,8 +1,8 @@
 package com.reut.ledger.rest
 
 import com.reut.ledger.config.AppConfiguration
-import com.reut.ledger.rest.QueryParam.ACCOUNT_ID
-import com.reut.ledger.rest.QueryParam.TRANSACTION_ID
+import com.reut.ledger.model.QueryParam.ACCOUNT_ID
+import com.reut.ledger.model.QueryParam.TRANSACTION_ID
 import com.reut.ledger.rest.handler.HandlerFactory
 import io.undertow.Handlers
 import io.undertow.Undertow

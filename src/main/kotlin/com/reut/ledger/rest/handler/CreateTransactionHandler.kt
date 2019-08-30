@@ -1,10 +1,10 @@
 package com.reut.ledger.rest.handler
 
-import com.reut.ledger.core.ErrorReason
 import com.reut.ledger.core.LedgerService
 import com.reut.ledger.model.CreateTransactionRequest
+import com.reut.ledger.model.ErrorReason
 import com.reut.ledger.model.TransactionConfirmation
-import com.reut.ledger.rest.Request
+import com.reut.ledger.rest.request.Request
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.HandlerResponse
 import com.reut.ledger.rest.response.ResponsesFactory

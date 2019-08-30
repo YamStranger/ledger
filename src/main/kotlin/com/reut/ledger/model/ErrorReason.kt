@@ -1,4 +1,4 @@
-package com.reut.ledger.core
+package com.reut.ledger.model
 
 enum class ErrorReason {
     ACCOUNT_DOES_NO_EXISTS,

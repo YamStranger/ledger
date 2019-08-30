@@ -1,10 +1,10 @@
 package com.reut.ledger
 
-import com.reut.ledger.core.ErrorReason
 import com.reut.ledger.core.InMemoryLedgerService
 import com.reut.ledger.core.LedgerService.Companion.expenseAccountId
 import com.reut.ledger.core.LedgerService.Companion.incomeAccountId
 import com.reut.ledger.model.Currency
+import com.reut.ledger.model.ErrorReason
 import java.util.UUID
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

@@ -1,9 +1,10 @@
 package com.reut.ledger.rest.handler
 
-import com.reut.ledger.rest.JsonUtil.serialize
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.HttpResponse
 import com.reut.ledger.rest.response.ResponsesFactory
+import com.reut.ledger.rest.util.JsonUtil.serialize
+import com.reut.ledger.rest.util.requestIdKey
 import io.undertow.Handlers
 import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange

@@ -9,15 +9,15 @@ import com.reut.ledger.config.HttpServerConfiguration
 import com.reut.ledger.model.AccountBalance
 import com.reut.ledger.model.AccountCreatedConfirmation
 import com.reut.ledger.model.AccountTransactions
+import com.reut.ledger.model.QueryParam
 import com.reut.ledger.model.Transaction
 import com.reut.ledger.model.TransactionConfirmation
-import com.reut.ledger.rest.JsonUtil
-import com.reut.ledger.rest.QueryParam
 import com.reut.ledger.rest.handler.LedgerHandler
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.ErrorObject
 import com.reut.ledger.rest.response.HandlerResponse
 import com.reut.ledger.rest.response.HttpResponse
+import com.reut.ledger.rest.util.JsonUtil
 import com.reut.ledger.util.RestMockModule
 import com.reut.ledger.util.TestRequests
 import com.reut.ledger.util.TestResponses

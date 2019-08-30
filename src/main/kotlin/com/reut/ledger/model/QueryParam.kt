@@ -1,4 +1,4 @@
-package com.reut.ledger.rest
+package com.reut.ledger.model
 
 enum class QueryParam {
     ACCOUNT_ID,

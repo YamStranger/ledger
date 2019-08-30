@@ -1,4 +1,4 @@
-package com.reut.ledger.rest.handler
+package com.reut.ledger.rest.util
 
 import io.undertow.server.HttpServerExchange
 import io.undertow.util.AttachmentKey

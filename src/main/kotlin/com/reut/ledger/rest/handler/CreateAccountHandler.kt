@@ -2,7 +2,7 @@ package com.reut.ledger.rest.handler
 
 import com.reut.ledger.core.LedgerService
 import com.reut.ledger.model.AccountCreatedConfirmation
-import com.reut.ledger.rest.Request
+import com.reut.ledger.rest.request.Request
 import com.reut.ledger.rest.response.HandlerResponse
 import io.undertow.util.StatusCodes.OK
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.reut.ledger.rest
+package com.reut.ledger.rest.util
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject

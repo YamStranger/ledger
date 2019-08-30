@@ -1,6 +1,8 @@
-package com.reut.ledger.rest.handler
+package com.reut.ledger.rest.util
 
 import com.reut.ledger.model.CreateTransactionRequest
+import com.reut.ledger.rest.handler.CreateTransactionHandler
+import com.reut.ledger.rest.handler.LedgerHandler
 
 object DeserializationConfigHelper {
     private val bodyTypes = mapOf(CreateTransactionHandler::class.java.canonicalName to CreateTransactionRequest::class.java)

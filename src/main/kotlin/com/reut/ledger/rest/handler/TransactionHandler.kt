@@ -2,9 +2,9 @@ package com.reut.ledger.rest.handler
 
 import com.reut.ledger.core.LedgerService
 import com.reut.ledger.core.toUUIDorNull
+import com.reut.ledger.model.QueryParam.TRANSACTION_ID
 import com.reut.ledger.model.Transaction
-import com.reut.ledger.rest.QueryParam.TRANSACTION_ID
-import com.reut.ledger.rest.Request
+import com.reut.ledger.rest.request.Request
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.HandlerResponse
 import com.reut.ledger.rest.response.ResponsesFactory

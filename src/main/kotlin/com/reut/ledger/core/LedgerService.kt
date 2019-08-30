@@ -2,6 +2,7 @@ package com.reut.ledger.core
 
 import com.reut.ledger.model.AccountBalance
 import com.reut.ledger.model.Currency
+import com.reut.ledger.model.Result
 import com.reut.ledger.model.Transaction
 import java.util.UUID
 

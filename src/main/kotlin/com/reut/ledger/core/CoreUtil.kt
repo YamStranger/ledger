@@ -1,5 +1,6 @@
 package com.reut.ledger.core
 
+import com.reut.ledger.model.AccountKey
 import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -15,7 +16,7 @@ fun <T> withAccountsLock(
 ): T {
     val listAccountKeys = accountKeys.sortedBy { it.accountId }
     if (times <= 0) {
-        throw FiledToObtainLock("Can't obtain lock for accounts $listAccountKeys")
+        throw FiledToObtainLockException("Can't obtain lock for accounts $listAccountKeys")
     }
 
     val locks: List<Lock> = if (readOnly) {
@@ -35,7 +36,7 @@ fun <T> withAccountsLock(
             val operationResult = if (locked) {
                 operation()
             } else {
-                throw RetryRequired("Can't obtain lock")
+                throw RetryRequiredException("Can't obtain lock")
             }
             operationResult
         } finally {
@@ -48,7 +49,7 @@ fun <T> withAccountsLock(
                 }
             }
         }
-    } catch (retryRequired: RetryRequired) {
+    } catch (retryRequired: RetryRequiredException) {
         withAccountsLock(
             times = times - 1,
             readOnly = readOnly,

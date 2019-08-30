@@ -1,5 +1,6 @@
-package com.reut.ledger.rest
+package com.reut.ledger.rest.request
 
+import com.reut.ledger.model.QueryParam
 import java.util.UUID
 
 data class Request<T>(

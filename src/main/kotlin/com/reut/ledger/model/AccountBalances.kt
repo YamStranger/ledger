@@ -1,6 +1,5 @@
-package com.reut.ledger.core
+package com.reut.ledger.model
 
-import com.reut.ledger.model.Currency
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
 
