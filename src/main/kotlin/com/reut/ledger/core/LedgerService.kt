@@ -36,7 +36,7 @@ interface LedgerService {
      * @param accountId is accountId
      * @param currency currency that used to return balance
      */
-    fun getAccountBalance(accountId: UUID, currency: Currency): AccountBalance?
+    fun getAccountBalance(accountId: UUID): AccountBalance?
 
     fun getTransaction(transactionId: UUID): Transaction?
 

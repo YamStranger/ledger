@@ -11,7 +11,7 @@ data class AccountBalances(
         val currentBalance = get(currency)
         if (change > 0 && Long.MAX_VALUE - currentBalance <= change) {
             throw IllegalStateException("Can't apply change $change, because current balance is $currentBalance, and it can be overflow")
-        } else if (change < 0 && Long.MIN_VALUE - currentBalance >= change) {
+        } else if (change < 0 && Long.MIN_VALUE - currentBalance <= change) {
             throw IllegalStateException("Can't apply change $change, because current balance is $currentBalance, and it can be overflow")
         }
         values[currency] = currentBalance + change

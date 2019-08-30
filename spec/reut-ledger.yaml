@@ -157,13 +157,17 @@ definitions:
         type: string
         format: uuid
         example: 00000000-0000-0000-1111-000000000001
-      currency:
-        type: string
-        example: GBP
-      balance:
-        type: integer
-        format: int64
-        example: 1000
+      balances:
+        type: object
+        properties:
+          GBP:
+            type: integer
+            format: int64
+            example: 1000
+          EUR:
+            type: integer
+            format: int64
+            example: 1000
   ListTransactionsResponse:
     type: object
     properties:

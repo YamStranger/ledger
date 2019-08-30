@@ -28,7 +28,8 @@ class CreateTransactionHandler @Inject constructor(
             if (errorReason != null) {
                 when (errorReason) {
                     ErrorReason.NOT_ENOUGH_BALANCE_TO_EXECUTE_TRANSACTION,
-                    ErrorReason.CANT_DEPOSIT_AMOUNT_BELOW_ZERO -> throw BadRequestException(
+                    ErrorReason.CANT_DEPOSIT_AMOUNT_BELOW_ZERO,
+                    ErrorReason.ACCOUNTS_FOR_TRANSACTION_SHOULD_BE_DIFFERENT -> throw BadRequestException(
                         ResponsesFactory.getCantExecuteOperationError(errorReason.name)
                     )
                     ErrorReason.ACCOUNT_DOES_NO_EXISTS -> throw BadRequestException(

@@ -4,6 +4,5 @@ import java.util.UUID
 
 data class AccountBalance(
     val accountId: UUID,
-    val balance: Long, // balance in minor units
-    val currency: Currency
+    val balances: Map<Currency, Long> // balance in minor units
 )

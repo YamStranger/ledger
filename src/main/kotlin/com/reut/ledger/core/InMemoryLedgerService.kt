@@ -67,6 +67,11 @@ class InMemoryLedgerService : LedgerService {
                 transactionId = null,
                 errorReason = ErrorReason.ACCOUNT_DOES_NO_EXISTS
             )
+        } else if (destinationAccountKey == sourceAccountKey){
+            return Result(
+                transactionId = null,
+                errorReason = ErrorReason.ACCOUNTS_FOR_TRANSACTION_SHOULD_BE_DIFFERENT
+            )
         }
 
         return withAccountsLock(
@@ -103,7 +108,7 @@ class InMemoryLedgerService : LedgerService {
         }
     }
 
-    override fun getAccountBalance(accountId: UUID, currency: Currency): AccountBalance? {
+    override fun getAccountBalance(accountId: UUID): AccountBalance? {
         val accountKey = getAccountKey(accountId = accountId)
             ?: return null
         return withAccountsLock(
@@ -113,8 +118,9 @@ class InMemoryLedgerService : LedgerService {
             val accountBalances = getAccountBalances(accountKey)
             AccountBalance(
                 accountId = accountId,
-                balance = accountBalances[currency],
-                currency = currency
+                balances = Currency.values().map { currency ->
+                    currency to accountBalances[currency]
+                }.toMap()
             )
         }
     }

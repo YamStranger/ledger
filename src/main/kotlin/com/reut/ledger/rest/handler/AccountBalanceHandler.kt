@@ -21,8 +21,7 @@ class AccountBalanceHandler @Inject constructor(
         return HandlerResponse(
             statusCode = OK,
             body = ledgerService.getAccountBalance(
-                accountId = accountId,
-                currency = Currency.GBP
+                accountId = accountId
             ) ?: throw BadRequestException(
                 ResponsesFactory.getNotFoundError()
             )
