@@ -1,7 +1,8 @@
 package com.reut.ledger.rest.handler
 
+import com.google.gson.reflect.TypeToken
+import com.reut.ledger.rest.JsonUtil
 import com.reut.ledger.rest.JsonUtil.serialize
-import com.reut.ledger.rest.JsonUtil.toJson
 import com.reut.ledger.rest.QueryParam
 import com.reut.ledger.rest.Request
 import com.reut.ledger.rest.response.BadRequestException
@@ -9,22 +10,35 @@ import com.reut.ledger.rest.response.HttpResponse
 import com.reut.ledger.rest.response.ResponsesFactory
 import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange
+import java.nio.charset.Charset
 import java.util.Deque
 
-class LedgerHttpHandler<T>(private val coreHandler: LedgerHandler<T>) : HttpHandler {
+class LedgerHttpHandler<M, T>(private val coreHandler: LedgerHandler<M, T>) : HttpHandler {
     override fun handleRequest(exchange: HttpServerExchange) {
         exchange.addDefaultHeaders()
-        val request = Request(
-            path = exchange.requestPath,
-            queryParams = extractQueryParams(exchange.queryParameters)
-        )
-        val response = coreHandler.handleRequest(request)
-        exchange.statusCode = response.statusCode
-        exchange.responseSender.send(
-            serialize(toJson(HttpResponse(
-                id = response.id,
-                body = response.body
-            ))))
+        val receiver = exchange.requestReceiver
+        receiver.setMaxBufferSize(1024 * 100)
+        receiver.receiveFullString({ exch, message ->
+            val response = coreHandler.handleRequest(Request(
+                path = exchange.requestPath,
+                body = message?.let {
+                    // FIXME we should find better way to deserialize body for handler
+                    val bodyClass = coreHandler.getBodyClass()
+                    if (bodyClass != Unit.javaClass) {
+                        JsonUtil.deserialize(message, bodyClass)
+                    } else {
+                        null
+                    }
+                },
+                queryParams = extractQueryParams(exchange.queryParameters)
+            ))
+            exch.statusCode = response.statusCode
+            exch.responseSender.send(
+                serialize(HttpResponse(
+                    id = response.id,
+                    body = response.body
+                )))
+        }, Charset.forName("UTF-8"))
     }
 
     private fun extractQueryParams(pathParams: Map<String, Deque<String>>): Map<QueryParam, String> {

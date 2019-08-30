@@ -4,6 +4,7 @@ import com.reut.ledger.model.AccountBalance
 import com.reut.ledger.model.AccountTransactions
 import com.reut.ledger.model.Currency
 import com.reut.ledger.model.Transaction
+import com.reut.ledger.model.TransactionConfirmation
 import com.reut.ledger.rest.response.ErrorObject
 import com.reut.ledger.rest.response.HandlerResponse
 import io.undertow.util.StatusCodes
@@ -26,6 +27,14 @@ object TestResponses {
             accountId = UUID.randomUUID(),
             balance = 1000,
             currency = Currency.GBP
+        )
+    )
+
+    val transactionConfirmation = HandlerResponse(
+        id = UUID.randomUUID(),
+        statusCode = StatusCodes.OK,
+        body = TransactionConfirmation(
+            transactionId = UUID.randomUUID()
         )
     )
 

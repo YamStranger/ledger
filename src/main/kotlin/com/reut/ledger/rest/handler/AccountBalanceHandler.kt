@@ -7,8 +7,8 @@ import com.reut.ledger.rest.response.HandlerResponse
 import io.undertow.util.StatusCodes
 import java.util.UUID
 
-class AccountBalanceHandler : LedgerHandler<AccountBalance> {
-    override fun handleRequest(request: Request) =
+class AccountBalanceHandler : LedgerHandler<Unit, AccountBalance> {
+    override fun handleRequest(request: Request<Unit>) =
         HandlerResponse(
             statusCode = StatusCodes.OK,
             body = AccountBalance(
@@ -17,4 +17,7 @@ class AccountBalanceHandler : LedgerHandler<AccountBalance> {
                 currency = Currency.GBP
             )
         )
+
+    // FIXME find better way to deserialize body
+    override fun getBodyClass(): Class<Unit> = Unit.javaClass
 }

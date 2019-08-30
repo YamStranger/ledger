@@ -4,7 +4,6 @@ import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.gson.responseObject
-import com.github.kittinunf.result.Result
 import com.reut.ledger.rest.JsonUtil
 import java.io.IOException
 import java.net.ServerSocket

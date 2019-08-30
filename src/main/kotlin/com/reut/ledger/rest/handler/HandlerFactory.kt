@@ -1,7 +1,6 @@
 package com.reut.ledger.rest.handler
 
 import com.reut.ledger.rest.JsonUtil.serialize
-import com.reut.ledger.rest.JsonUtil.toJson
 import com.reut.ledger.rest.response.BadRequestException
 import com.reut.ledger.rest.response.ErrorObject
 import com.reut.ledger.rest.response.HttpResponse
@@ -30,7 +29,7 @@ class HandlerFactory @Inject constructor(
     fun getTransactionHandler() = transactionHandler.instrumented()
     fun getAccountTransactionsHandler() = accountTransactionsHandler.instrumented()
 
-    private fun <T> LedgerHandler<T>.instrumented(): HttpHandler {
+    private fun <M, T> LedgerHandler<M, T>.instrumented(): HttpHandler {
         return LedgerHttpHandler(this)
             .withDefaults()
             .asBlockingHandler()
@@ -55,10 +54,10 @@ class HandlerFactory @Inject constructor(
         val exception = exchange.getAttachment(ExceptionHandler.THROWABLE) as BadRequestException
         exchange.statusCode = exception.errorResponse.statusCode
         exchange.responseSender.send(
-            serialize(toJson(HttpResponse(
+            serialize(HttpResponse(
                 id = exception.errorResponse.id,
                 body = exception.errorResponse.body
-            )))
+            ))
         )
     }
 
@@ -68,12 +67,12 @@ class HandlerFactory @Inject constructor(
         val errorId = UUID.randomUUID()
         logger.error(exception) { "undefinedException: $errorId" }
         exchange.responseSender.send(
-            serialize(toJson(HttpResponse(
+            serialize(HttpResponse(
                 id = errorId,
                 body = ErrorObject(
                     errorCode = 0,
                     errorDetails = "Internal Error")
-            )))
+            ))
         )
     }
 }

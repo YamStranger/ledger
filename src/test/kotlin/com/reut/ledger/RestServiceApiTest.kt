@@ -2,12 +2,15 @@ package com.reut.ledger
 
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
 import com.google.inject.Injector
 import com.reut.ledger.config.ConfigurationModule.Companion.SERVER_HTTP_PORT
 import com.reut.ledger.config.HttpServerConfiguration
 import com.reut.ledger.model.AccountBalance
 import com.reut.ledger.model.AccountTransactions
 import com.reut.ledger.model.Transaction
+import com.reut.ledger.model.TransactionConfirmation
+import com.reut.ledger.rest.JsonUtil
 import com.reut.ledger.rest.QueryParam
 import com.reut.ledger.rest.handler.LedgerHandler
 import com.reut.ledger.rest.response.BadRequestException
@@ -15,6 +18,7 @@ import com.reut.ledger.rest.response.ErrorObject
 import com.reut.ledger.rest.response.HandlerResponse
 import com.reut.ledger.rest.response.HttpResponse
 import com.reut.ledger.util.RestMockModule
+import com.reut.ledger.util.TestRequests
 import com.reut.ledger.util.TestResponses
 import com.reut.ledger.util.execute
 import com.reut.ledger.util.findFreePort
@@ -28,7 +32,6 @@ import java.util.UUID
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -179,7 +182,27 @@ class RestServiceApiTest {
      */
     @Test
     fun `accepts transaction request`() {
-        fail<Unit>("")
+        every {
+            testModule.createTransactionHandler.handleRequest(any())
+        } returns TestResponses.transactionConfirmation
+        val createTransactionPath = "/transaction"
+        val (fuelResponse, response, _) = "$rootPath$createTransactionPath"
+            .httpPost()
+            .body(JsonUtil.serialize(TestRequests.transaction))
+            .execute<HttpResponse<TransactionConfirmation>>()
+
+
+        assertNotNull(response)
+
+        verify(exactly = 1) {
+            testModule.createTransactionHandler.handleRequest(match {
+                it.path == createTransactionPath &&
+                    it.queryParams.isEmpty()
+            })
+        }
+
+        assertEquals(TestResponses.transactionConfirmation.statusCode, fuelResponse.statusCode)
+        assertEquals(TestResponses.transactionConfirmation.body, response!!.body)
     }
 
     /**
@@ -208,11 +231,11 @@ class RestServiceApiTest {
         )
     }
 
-    private fun <T> validateResponse(
+    private fun <M, T> validateResponse(
         fuelResponse: Response,
         response: HttpResponse<*>?,
         mockedResponse: HandlerResponse<*>,
-        mockedHandler: LedgerHandler<T>,
+        mockedHandler: LedgerHandler<M, T>,
         queryParam: QueryParam,
         queryParamValue: String,
         path: String

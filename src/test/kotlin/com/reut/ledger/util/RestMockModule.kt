@@ -1,5 +1,6 @@
 package com.reut.ledger.util
 
+import com.reut.ledger.model.Transaction
 import com.reut.ledger.rest.handler.AccountBalanceHandler
 import com.reut.ledger.rest.handler.AccountTransactionsHandler
 import com.reut.ledger.rest.handler.CantFindHandler
@@ -7,6 +8,7 @@ import com.reut.ledger.rest.handler.CreateTransactionHandler
 import com.reut.ledger.rest.handler.TransactionHandler
 import dev.misfitlabs.kotlinguice4.KotlinModule
 import io.mockk.clearMocks
+import io.mockk.every
 import io.mockk.mockk
 
 class RestMockModule : KotlinModule() {
@@ -22,6 +24,12 @@ class RestMockModule : KotlinModule() {
         bind<AccountTransactionsHandler>().toInstance(accountTransactionsHandler)
         bind<TransactionHandler>().toInstance(transactionHandler)
         bind<CreateTransactionHandler>().toInstance(createTransactionHandler)
+
+        every { cantFindHandler.getBodyClass() } returns Unit.javaClass
+        every { accountBalanceHandler.getBodyClass() } returns Unit.javaClass
+        every { accountTransactionsHandler.getBodyClass() } returns Unit.javaClass
+        every { transactionHandler.getBodyClass() } returns Unit.javaClass
+        every { createTransactionHandler.getBodyClass() } returns Transaction::class.java
     }
 
     fun clearMocks() {
@@ -30,7 +38,8 @@ class RestMockModule : KotlinModule() {
             accountBalanceHandler,
             accountTransactionsHandler,
             transactionHandler,
-            createTransactionHandler
+            createTransactionHandler,
+            answers = false
         )
     }
 }

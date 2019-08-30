@@ -6,12 +6,15 @@ import com.reut.ledger.rest.response.HandlerResponse
 import com.reut.ledger.rest.response.ResponsesFactory
 import mu.KotlinLogging
 
-class CantFindHandler : LedgerHandler<ErrorObject> {
+class CantFindHandler : LedgerHandler<Unit, ErrorObject> {
     private val logger = KotlinLogging.logger {}
 
-    override fun handleRequest(request: Request): HandlerResponse<ErrorObject> {
+    override fun handleRequest(request: Request<Unit>): HandlerResponse<ErrorObject> {
         return ResponsesFactory.getNotFoundError().also {
             logger.debug { "Can't find path ${request.path}, errorId = ${it.id}" }
         }
     }
+
+    // FIXME find better way to deserialize body
+    override fun getBodyClass(): Class<Unit> = Unit.javaClass
 }
