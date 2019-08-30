@@ -4,6 +4,7 @@ import com.reut.ledger.model.CreateTransactionRequest
 import com.reut.ledger.rest.handler.AccountBalanceHandler
 import com.reut.ledger.rest.handler.AccountTransactionsHandler
 import com.reut.ledger.rest.handler.CantFindHandler
+import com.reut.ledger.rest.handler.CreateAccountHandler
 import com.reut.ledger.rest.handler.CreateTransactionHandler
 import com.reut.ledger.rest.handler.TransactionHandler
 import dev.misfitlabs.kotlinguice4.KotlinModule
@@ -17,6 +18,7 @@ class RestMockModule : KotlinModule() {
     val accountTransactionsHandler: AccountTransactionsHandler = mockk()
     val transactionHandler: TransactionHandler = mockk()
     val createTransactionHandler: CreateTransactionHandler = mockk()
+    val createAccountHandler: CreateAccountHandler = mockk()
 
     override fun configure() {
         bind<CantFindHandler>().toInstance(cantFindHandler)
@@ -24,12 +26,14 @@ class RestMockModule : KotlinModule() {
         bind<AccountTransactionsHandler>().toInstance(accountTransactionsHandler)
         bind<TransactionHandler>().toInstance(transactionHandler)
         bind<CreateTransactionHandler>().toInstance(createTransactionHandler)
+        bind<CreateAccountHandler>().toInstance(createAccountHandler)
 
         every { cantFindHandler.getBodyClass() } returns Unit.javaClass
         every { accountBalanceHandler.getBodyClass() } returns Unit.javaClass
         every { accountTransactionsHandler.getBodyClass() } returns Unit.javaClass
         every { transactionHandler.getBodyClass() } returns Unit.javaClass
         every { createTransactionHandler.getBodyClass() } returns CreateTransactionRequest::class.java
+        every { createAccountHandler.getBodyClass() } returns Unit.javaClass
     }
 
     fun clearMocks() {

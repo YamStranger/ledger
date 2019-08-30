@@ -7,6 +7,19 @@ host: "127.0.0.1:8081"
 schemes:
   - "http"
 paths:
+  /account/create:
+    post:
+      summary: "Creates new account"
+      description: "Creates new account and returns id"
+      consumes:
+        - "text/plain;charset=UTF-8"
+      produces:
+        - "text/plain;charset=UTF-8"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/AccountCreatedConfirmationResponse"
   /transaction/{transactionId}:
     get:
       summary: "Returns transaction by id"
@@ -37,13 +50,13 @@ paths:
   /transaction:
     post:
       summary: "Adds new transaction that transfers money from one account to other"
-      description: "By default only one account exists 00000000-0000-0000-0000-000000000001. If we try send money from this account
-      to other account like 00000000-0000-0000-0000-000000000002 - second account will be created. Virtually 00000000-0000-0000-0000-000000000001
+      description: "By default only one account exists 00000000-0000-0000-0001-000000000001. If we try send money from this account
+      to other account like 00000000-0000-0000-0000-000000000002 - second account will be created. Virtually 00000000-0000-0000-0001-000000000001
       has unlimited money amount"
       consumes:
-        - "application/json"
+        - "text/plain;charset=UTF-8"
       produces:
-        - "application/json"
+        - "text/plain;charset=UTF-8"
       parameters:
         - in: "body"
           name: "body"
@@ -73,7 +86,7 @@ paths:
           required: true
           type: "string"
           format: uuid
-          default: '00000000-0000-0000-0000-000000000001'
+          default: '00000000-0000-0000-0001-000000000001'
       responses:
         200:
           description: "successful operation"
@@ -102,7 +115,7 @@ paths:
           required: true
           type: "string"
           format: uuid
-          default: '00000000-0000-0000-0000-000000000001'
+          default: '00000000-0000-0000-0001-000000000001'
       responses:
         200:
           description: "successful operation"
@@ -181,7 +194,7 @@ definitions:
       from:
         type: string
         format: uuid
-        example: 00000000-0000-0000-0000-000000000001
+        example: 00000000-0000-0000-0001-000000000001
       to:
         type: string
         format: uuid
@@ -193,12 +206,16 @@ definitions:
         type: integer
         format: int64
         example: 1000
+      createdAt:
+        type: integer
+        format: int64
+        example: 1567171637
   CreateTransactionRequest:
     type: object
     properties:
       from:
         type: string
-        example: 00000000-0000-0000-0000-000000000001
+        example: 00000000-0000-0000-0001-000000000001
         description: account id
       to:
         type: string
@@ -228,6 +245,22 @@ definitions:
         type: string
         format: uuid
         example: 00000000-0000-0000-1111-000000000001
+  AccountCreatedConfirmationResponse:
+    type: object
+    properties:
+      requestId:
+        type: string
+        format: uuid
+        example: 00000000-1111-1111-1111-000000000001
+      body:
+        $ref: "#/definitions/AccountCreatedConfirmation"
+  AccountCreatedConfirmation:
+    type: object
+    properties:
+      accountId:
+        type: string
+        format: uuid
+        example: 00000000-0000-0000-0000-000000000002
   NotFoundResponse:
     type: object
     properties:

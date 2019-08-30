@@ -27,18 +27,18 @@ Used tech:
 To avoid dependencies problems gradle is used in mode `resolutionStrategy { failOnVersionConflict() }`.
 
 ## Balances
-By default only one account exists: `00000000-0000-0000-0000-000000000001`(*Genesis*) with infinite balance.
+By default only one account exists: `00000000-0000-0000-0001-000000000001`(*Genesis*) with infinite balance.
 
 Others account can be created by creating transaction from *Genesis* account to user account.
 
 Transfers between accounts can be done, but only till their balance is > 0.
 
 Usage flow:
-1. Create transaction to transfer money from `00000000-0000-0000-0000-000000000001`(*Genesis*) account to user account: for example `00000000-0000-0000-0000-000000000002`. After this operation
+1. Create transaction to transfer money from `00000000-0000-0000-0001-000000000001`(*Genesis*) account to user account: for example `00000000-0000-0000-0000-000000000002`. After this operation
  account will be created, and one transaction will be stored for this account. 
 2. User can list transactions for account `00000000-0000-0000-0000-000000000002`, now its only one transaction.
 3. User can get balance for account `00000000-0000-0000-0000-000000000002`
-4. Create transaction to transfer money from `00000000-0000-0000-0000-000000000001`(*Genesis*) account to user account: for example `00000000-0000-0000-0000-000000000003`. . After this operation
+4. Create transaction to transfer money from `00000000-0000-0000-0001-000000000001`(*Genesis*) account to user account: for example `00000000-0000-0000-0000-000000000003`. . After this operation
 account will be created, and one transaction will be stored for this account.
 5. User can list transactions for account `00000000-0000-0000-0000-000000000003`, now its only one transaction.
 6. User can get balance for account `00000000-0000-0000-0000-000000000003`

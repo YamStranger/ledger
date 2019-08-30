@@ -7,6 +7,7 @@ import com.google.inject.Injector
 import com.reut.ledger.config.ConfigurationModule.Companion.SERVER_HTTP_PORT
 import com.reut.ledger.config.HttpServerConfiguration
 import com.reut.ledger.model.AccountBalance
+import com.reut.ledger.model.AccountCreatedConfirmation
 import com.reut.ledger.model.AccountTransactions
 import com.reut.ledger.model.Transaction
 import com.reut.ledger.model.TransactionConfirmation
@@ -202,6 +203,30 @@ class RestServiceApiTest {
 
         assertEquals(TestResponses.transactionConfirmation.statusCode, fuelResponse.statusCode)
         assertEquals(TestResponses.transactionConfirmation.body, response!!.body)
+    }
+    /**
+     * Test for register(routingHandler, Methods.POST, "/account/create", handlerFactory.postCreateAccountHandler())
+     */
+    @Test
+    fun `accepts create account request`() {
+        every {
+            testModule.createAccountHandler.handleRequest(any())
+        } returns TestResponses.accountCreatedConfirmation
+        val createAccountPath = "/account/create"
+        val (fuelResponse, response, _) = "$rootPath$createAccountPath"
+            .httpPost()
+            .execute<HttpResponse<AccountCreatedConfirmation>>()
+
+        assertNotNull(response)
+
+        verify(exactly = 1) {
+            testModule.createAccountHandler.handleRequest(match {
+                it.path == createAccountPath
+            })
+        }
+
+        assertEquals(TestResponses.accountCreatedConfirmation.statusCode, fuelResponse.statusCode)
+        assertEquals(TestResponses.accountCreatedConfirmation.body, response!!.body)
     }
 
     /**

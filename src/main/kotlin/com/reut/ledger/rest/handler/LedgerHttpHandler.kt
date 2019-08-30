@@ -11,14 +11,21 @@ import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange
 import java.nio.charset.Charset
 import java.util.Deque
+import java.util.UUID
+import mu.KotlinLogging
 
 class LedgerHttpHandler<M, T>(private val coreHandler: LedgerHandler<M, T>) : HttpHandler {
+    private val logger = KotlinLogging.logger {}
+
     override fun handleRequest(exchange: HttpServerExchange) {
+        val requestId = UUID.randomUUID() // TODO config logger to have this request id in messages for this thread
+        exchange.putAttachment(requestIdKey, requestId)
         exchange.addDefaultHeaders()
         val receiver = exchange.requestReceiver
         receiver.setMaxBufferSize(1024 * 100)
         receiver.receiveFullString({ exch, message ->
-            val response = coreHandler.handleRequest(Request(
+            val request: Request<M> = Request(
+                requestId = requestId,
                 path = exchange.requestPath,
                 body = message?.let {
                     // FIXME we should find better way to deserialize body for handler
@@ -30,11 +37,15 @@ class LedgerHttpHandler<M, T>(private val coreHandler: LedgerHandler<M, T>) : Ht
                     }
                 },
                 queryParams = extractQueryParams(exchange.queryParameters)
-            ))
+            )
+            logger.info { "Request{$requestId}: $request" }
+            val response = coreHandler.handleRequest(request).also {
+                logger.info { "Response{$requestId}: $it" }
+            }
             exch.statusCode = response.statusCode
             exch.responseSender.send(
                 serialize(HttpResponse(
-                    requestId = response.requestId,
+                    requestId = requestId,
                     body = response.body
                 )))
         }, Charset.forName("UTF-8"))

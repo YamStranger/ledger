@@ -8,6 +8,12 @@ data class AccountBalances(
 ) {
     operator fun get(currency: Currency): Long = values[currency] ?: 0L
     fun apply(currency: Currency, change: Long) {
-        values[currency] = get(currency) + change
+        val currentBalance = get(currency)
+        if (change > 0 && Long.MAX_VALUE - currentBalance <= change) {
+            throw IllegalStateException("Can't apply change $change, because current balance is $currentBalance, and it can be overflow")
+        } else if (change < 0 && Long.MIN_VALUE - currentBalance >= change) {
+            throw IllegalStateException("Can't apply change $change, because current balance is $currentBalance, and it can be overflow")
+        }
+        values[currency] = currentBalance + change
     }
 }

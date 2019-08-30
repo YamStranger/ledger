@@ -1,11 +1,9 @@
 package com.reut.ledger.rest.response
 
 import io.undertow.util.StatusCodes
-import java.util.UUID
 
 object ResponsesFactory {
     fun getNotFoundError() = HandlerResponse(
-        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.NOT_FOUND,
         body = ErrorObject(
             errorCode = 0,
@@ -14,7 +12,6 @@ object ResponsesFactory {
     )
 
     fun getRequestError() = HandlerResponse(
-        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.BAD_REQUEST,
         body = ErrorObject(
             errorCode = 1,
@@ -22,12 +19,35 @@ object ResponsesFactory {
         )
     )
 
-    fun getBadPathParameterError() = HandlerResponse(
-        requestId = UUID.randomUUID(),
+    fun getCantExecuteOperationError(message: String? = null) = HandlerResponse(
         statusCode = StatusCodes.BAD_REQUEST,
         body = ErrorObject(
             errorCode = 2,
-            errorDetails = "Not supported path parameter"
+            errorDetails = message ?: "Bad request"
+        )
+    )
+
+    fun getEmptyBodyError() = HandlerResponse(
+        statusCode = StatusCodes.BAD_REQUEST,
+        body = ErrorObject(
+            errorCode = 3,
+            errorDetails = "Empty body"
+        )
+    )
+
+    fun getBadPathParameterError(message: String? = null) = HandlerResponse(
+        statusCode = StatusCodes.BAD_REQUEST,
+        body = ErrorObject(
+            errorCode = 4,
+            errorDetails = message ?: "Not supported path parameter"
+        )
+    )
+
+    fun getInternalServerError(message: String? = null) = HandlerResponse(
+        statusCode = StatusCodes.INTERNAL_SERVER_ERROR,
+        body = ErrorObject(
+            errorCode = 4,
+            errorDetails = message ?: "Internal server error"
         )
     )
 }

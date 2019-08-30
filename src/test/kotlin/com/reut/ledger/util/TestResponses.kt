@@ -1,6 +1,7 @@
 package com.reut.ledger.util
 
 import com.reut.ledger.model.AccountBalance
+import com.reut.ledger.model.AccountCreatedConfirmation
 import com.reut.ledger.model.AccountTransactions
 import com.reut.ledger.model.Currency
 import com.reut.ledger.model.Transaction
@@ -12,7 +13,6 @@ import java.util.UUID
 
 object TestResponses {
     val notFoundError = HandlerResponse(
-        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.NOT_FOUND,
         body = ErrorObject(
             errorCode = 0,
@@ -21,7 +21,6 @@ object TestResponses {
     )
 
     val accountBalance = HandlerResponse(
-        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = AccountBalance(
             accountId = UUID.randomUUID(),
@@ -31,15 +30,20 @@ object TestResponses {
     )
 
     val transactionConfirmation = HandlerResponse(
-        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = TransactionConfirmation(
             transactionId = UUID.randomUUID()
         )
     )
 
+    val accountCreatedConfirmation = HandlerResponse(
+        statusCode = StatusCodes.OK,
+        body = AccountCreatedConfirmation(
+            accountId = UUID.randomUUID()
+        )
+    )
+
     val transaction = HandlerResponse(
-        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = Transaction(
             id = UUID.randomUUID(),
@@ -51,7 +55,6 @@ object TestResponses {
     )
 
     val accountTransactions = HandlerResponse(
-        requestId = UUID.randomUUID(),
         statusCode = StatusCodes.OK,
         body = AccountTransactions(
             transactions = listOf(

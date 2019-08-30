@@ -23,8 +23,12 @@ class HttpServer @Inject constructor(
     fun start() {
         logger.info { "Starting rest service with config: ${appConfiguration.httpServerConfiguration}" }
         val routingHandler = Handlers.routing()
+        register(routingHandler, Methods.POST, "/account/create",
+            handlerFactory.postCreateAccountHandler())
         register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/balance",
             handlerFactory.getAccountBalanceHandler())
+        register(routingHandler, Methods.PUT, "/account/{$ACCOUNT_ID}",
+            handlerFactory.postTransactionHandler())
         register(routingHandler, Methods.GET, "/account/{$ACCOUNT_ID}/transactions",
             handlerFactory.getAccountTransactionsHandler())
         register(routingHandler, Methods.POST, "/transaction",
@@ -49,6 +53,7 @@ class HttpServer @Inject constructor(
         handler: HttpHandler
     ): String {
         routing.add(method, template, handler)
+        routing.add(Methods.OPTIONS, template, handler)
         return template
     }
 
