@@ -58,15 +58,15 @@ class InMemoryLedgerServiceTest {
         )
         assertNull(result.errorReason)
 
-        val userBalances = ledgerService.getAccountBalance(userAccount)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(1000L, userBalances.balances[Currency.GBP])
-        assertEquals(0L, userBalances.balances[Currency.EUR])
+        checkBalances(userAccount, mapOf(
+            Currency.GBP to 1000L,
+            Currency.EUR to 0L
+        ))
 
-        val incomeAccBalances = ledgerService.getAccountBalance(incomeAccountId)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(-1000L, incomeAccBalances.balances[Currency.GBP])
-        assertEquals(0L, incomeAccBalances.balances[Currency.EUR])
+        checkBalances(incomeAccountId, mapOf(
+            Currency.GBP to -1000L,
+            Currency.EUR to 0L
+        ))
     }
 
     @Test
@@ -81,15 +81,15 @@ class InMemoryLedgerServiceTest {
         )
         assertNotNull(result.errorReason)
         assertEquals(ErrorReason.NOT_ENOUGH_BALANCE_TO_EXECUTE_TRANSACTION, result.errorReason)
-        val userBalances = ledgerService.getAccountBalance(userAccount)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(0L, userBalances.balances[Currency.GBP])
-        assertEquals(0L, userBalances.balances[Currency.EUR])
+        checkBalances(userAccount, mapOf(
+            Currency.GBP to 0L,
+            Currency.EUR to 0L
+        ))
 
-        val otherUserBalance = ledgerService.getAccountBalance(otherUserAccount)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(0L, otherUserBalance.balances[Currency.GBP])
-        assertEquals(0L, otherUserBalance.balances[Currency.EUR])
+        checkBalances(otherUserAccount, mapOf(
+            Currency.GBP to 0L,
+            Currency.EUR to 0L
+        ))
     }
 
     @Test
@@ -111,15 +111,15 @@ class InMemoryLedgerServiceTest {
             )
         }
 
-        val userBalances = ledgerService.getAccountBalance(userAccount)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(10L, userBalances.balances[Currency.GBP])
-        assertEquals(0L, userBalances.balances[Currency.EUR])
+        checkBalances(userAccount, mapOf(
+            Currency.GBP to 10L,
+            Currency.EUR to 0L
+        ))
 
-        val incomeAccountBalance = ledgerService.getAccountBalance(incomeAccountId)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(-10L, incomeAccountBalance.balances[Currency.GBP])
-        assertEquals(0L, incomeAccountBalance.balances[Currency.EUR])
+        checkBalances(incomeAccountId, mapOf(
+            Currency.GBP to -10L,
+            Currency.EUR to 0L
+        ))
     }
 
     @Test
@@ -142,15 +142,15 @@ class InMemoryLedgerServiceTest {
         assertNotNull(result.errorReason)
         assertEquals(ErrorReason.CANT_DEPOSIT_TO_INCOME_ACCOUNT, result.errorReason)
 
-        val userBalances = ledgerService.getAccountBalance(userAccount)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(10L, userBalances.balances[Currency.GBP])
-        assertEquals(0L, userBalances.balances[Currency.EUR])
+        checkBalances(userAccount, mapOf(
+            Currency.GBP to 10L,
+            Currency.EUR to 0L
+        ))
 
-        val incomeAccountBalance = ledgerService.getAccountBalance(incomeAccountId)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(-10L, incomeAccountBalance.balances[Currency.GBP])
-        assertEquals(0L, incomeAccountBalance.balances[Currency.EUR])
+        checkBalances(incomeAccountId, mapOf(
+            Currency.GBP to -10L,
+            Currency.EUR to 0L
+        ))
     }
 
     @Test
@@ -166,15 +166,15 @@ class InMemoryLedgerServiceTest {
 
         assertNotNull(result.errorReason)
         assertEquals(ErrorReason.CANT_CREDIT_EXPENSES_ACCOUNT, result.errorReason)
-        val userBalances = ledgerService.getAccountBalance(userAccount)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(0L, userBalances.balances[Currency.GBP])
-        assertEquals(0L, userBalances.balances[Currency.EUR])
+        checkBalances(userAccount, mapOf(
+            Currency.GBP to 0L,
+            Currency.EUR to 0L
+        ))
 
-        val expenseAccountBalance = ledgerService.getAccountBalance(expenseAccountId)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(0L, expenseAccountBalance.balances[Currency.GBP])
-        assertEquals(0L, expenseAccountBalance.balances[Currency.EUR])
+        checkBalances(expenseAccountId, mapOf(
+            Currency.GBP to 0L,
+            Currency.EUR to 0L
+        ))
     }
 
     @Test
@@ -193,21 +193,29 @@ class InMemoryLedgerServiceTest {
             currency = Currency.GBP,
             amount = 10
         )
-
         assertNull(result.errorReason)
-        val userBalances = ledgerService.getAccountBalance(userAccount)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(0L, userBalances.balances[Currency.GBP])
-        assertEquals(0L, userBalances.balances[Currency.EUR])
 
-        val expenseAccountBalance = ledgerService.getAccountBalance(expenseAccountId)
-            ?: throw IllegalStateException("Can't find balance")
-        assertEquals(10L, expenseAccountBalance.balances[Currency.GBP])
-        assertEquals(0L, expenseAccountBalance.balances[Currency.EUR])
+        checkBalances(userAccount, mapOf(
+            Currency.GBP to 0L,
+            Currency.EUR to 0L
+        ))
 
-        val incomeAccountBalance = ledgerService.getAccountBalance(incomeAccountId)
+        checkBalances(expenseAccountId, mapOf(
+            Currency.GBP to 10L,
+            Currency.EUR to 0L
+        ))
+
+        checkBalances(incomeAccountId, mapOf(
+            Currency.GBP to -10L,
+            Currency.EUR to 0L
+        ))
+    }
+
+    fun checkBalances(accountId: UUID, balances: Map<Currency, Long>) {
+        val accountBalance = ledgerService.getAccountBalance(accountId)
             ?: throw IllegalStateException("Can't find balance")
-        assertEquals(-10L, incomeAccountBalance.balances[Currency.GBP])
-        assertEquals(0L, incomeAccountBalance.balances[Currency.EUR])
+        balances.forEach { currency, balance ->
+            assertEquals(balance, accountBalance.balances[currency])
+        }
     }
 }

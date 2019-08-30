@@ -105,7 +105,6 @@ class ConcurrentLedgerServiceTest {
         start.release(Int.MAX_VALUE)
         finish.await()
 
-
         assertEquals(0, errors.get())
         assertEquals(accountsCount * 2 * rounds + 1, ledgerService.listTransactions(accounts.first())!!.size)
         accounts.forEach { account ->
@@ -113,6 +112,5 @@ class ConcurrentLedgerServiceTest {
                 ?: throw IllegalStateException("Can't find balance")
             assertEquals(initialDeposit, balance.balances[Currency.GBP])
         }
-
     }
 }
