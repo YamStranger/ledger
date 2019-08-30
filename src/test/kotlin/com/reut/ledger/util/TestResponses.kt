@@ -9,6 +9,7 @@ import com.reut.ledger.model.TransactionConfirmation
 import com.reut.ledger.rest.response.ErrorObject
 import com.reut.ledger.rest.response.HandlerResponse
 import io.undertow.util.StatusCodes
+import java.time.Instant
 import java.util.UUID
 
 object TestResponses {
@@ -24,8 +25,9 @@ object TestResponses {
         statusCode = StatusCodes.OK,
         body = AccountBalance(
             accountId = UUID.randomUUID(),
-            balance = 1000,
-            currency = Currency.GBP
+            balances = mapOf(
+                Currency.GBP to 1000L
+            )
         )
     )
 
@@ -50,7 +52,8 @@ object TestResponses {
             from = UUID.randomUUID(),
             to = UUID.randomUUID(),
             currency = Currency.GBP,
-            amount = 1000
+            amount = 1000,
+            createdAt = Instant.now().toEpochMilli()
         )
     )
 
@@ -63,7 +66,8 @@ object TestResponses {
                     from = UUID.randomUUID(),
                     to = UUID.randomUUID(),
                     currency = Currency.GBP,
-                    amount = 1000
+                    amount = 1000,
+                    createdAt = Instant.now().toEpochMilli()
                 )
             )
         )

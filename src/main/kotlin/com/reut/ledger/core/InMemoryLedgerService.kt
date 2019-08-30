@@ -55,23 +55,17 @@ class InMemoryLedgerService : LedgerService {
         amount: Long
     ): Result {
         val sourceAccountKey = getAccountKey(accountId = from)
+            ?: return getErrorResult(ErrorReason.ACCOUNT_DOES_NO_EXISTS)
         val destinationAccountKey = getAccountKey(accountId = to)
+            ?: return getErrorResult(ErrorReason.ACCOUNT_DOES_NO_EXISTS)
 
-        if (amount <= 0) {
-            return Result(
-                transactionId = null,
-                errorReason = ErrorReason.CANT_DEPOSIT_AMOUNT_BELOW_ZERO
-            )
-        } else if (destinationAccountKey == null || sourceAccountKey == null) {
-            return Result(
-                transactionId = null,
-                errorReason = ErrorReason.ACCOUNT_DOES_NO_EXISTS
-            )
-        } else if (destinationAccountKey == sourceAccountKey){
-            return Result(
-                transactionId = null,
-                errorReason = ErrorReason.ACCOUNTS_FOR_TRANSACTION_SHOULD_BE_DIFFERENT
-            )
+        when {
+            amount <= 0 -> return getErrorResult(ErrorReason.CANT_DEPOSIT_AMOUNT_BELOW_ZERO)
+            destinationAccountKey == sourceAccountKey -> return getErrorResult(ErrorReason.ACCOUNTS_FOR_TRANSACTION_SHOULD_BE_DIFFERENT)
+            sourceAccountKey.accountId == expenseAccountId -> return getErrorResult(ErrorReason.CANT_CREDIT_EXPENSES_ACCOUNT)
+            destinationAccountKey.accountId == incomeAccountId -> return getErrorResult(ErrorReason.CANT_DEPOSIT_TO_INCOME_ACCOUNT)
+            sourceAccountKey.accountId == incomeAccountId && destinationAccountKey.accountId == expenseAccountId ->
+                return getErrorResult(ErrorReason.UNSUPPORTED_TRANSACTION)
         }
 
         return withAccountsLock(
@@ -91,11 +85,9 @@ class InMemoryLedgerService : LedgerService {
             val previousSourceBalance = getAccountBalances(sourceAccountKey)
 
             // check if coin balance available for this currency
-            if (sourceAccountKey.accountId != incomeAccountId && previousSourceBalance[currency] <= amount) {
-                return@withAccountsLock Result(
-                    transactionId = null,
-                    errorReason = ErrorReason.NOT_ENOUGH_BALANCE_TO_EXECUTE_TRANSACTION
-                )
+            when {
+                sourceAccountKey.accountId != incomeAccountId && previousSourceBalance[currency] < amount ->
+                    return@withAccountsLock getErrorResult(ErrorReason.NOT_ENOUGH_BALANCE_TO_EXECUTE_TRANSACTION)
             }
             previousDestinationBalance.apply(currency, amount)
             previousSourceBalance.apply(currency, -amount)
@@ -128,6 +120,11 @@ class InMemoryLedgerService : LedgerService {
     override fun getTransaction(transactionId: UUID): Transaction? {
         return transactionsCache[transactionId]
     }
+
+    private fun getErrorResult(errorReason: ErrorReason): Result = Result(
+        transactionId = null,
+        errorReason = errorReason
+    )
 
     private fun createAccount(newAccountId: UUID) {
         val accountKey = AccountKey(accountId = newAccountId)
