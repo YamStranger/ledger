@@ -5,12 +5,13 @@ import com.google.inject.Guice.createInjector
 import com.google.inject.Injector
 import com.google.inject.util.Modules
 import com.reut.ledger.config.ConfigurationModule
+import com.reut.ledger.core.CoreModule
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import dev.misfitlabs.kotlinguice4.getInstance
 
 fun main() {
-    startApp(createInjector(loadConfig()))
+    loadConfig().createInjector().startApp()
 }
 
 internal fun loadConfig(): Config {
@@ -19,11 +20,14 @@ internal fun loadConfig(): Config {
     )
 }
 
-internal fun createInjector(config: Config, moduleOverrides: List<AbstractModule> = emptyList()) =
-    createInjector(Modules.override(ConfigurationModule(config)).with(moduleOverrides))
+internal fun Config.createInjector(moduleOverrides: List<AbstractModule> = emptyList()) =
+    createInjector(Modules.override(
+        ConfigurationModule(this),
+        CoreModule()
+    ).with(moduleOverrides))
 
-internal fun startApp(injector: Injector): Application {
-    val application = injector.getInstance<Application>()
+internal fun Injector.startApp(): Application {
+    val application = this.getInstance<Application>()
     Runtime.getRuntime().addShutdownHook(Thread {
         application.stop()
     })

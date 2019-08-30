@@ -15,6 +15,6 @@ class CantFindHandler : LedgerHandler<Unit, ErrorObject> {
         }
     }
 
-    // FIXME find better way to deserialize body
+    // FIXME find better way to describe body type
     override fun getBodyClass(): Class<Unit> = Unit.javaClass
 }

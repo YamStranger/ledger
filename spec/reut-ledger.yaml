@@ -186,10 +186,7 @@ definitions:
         type: string
         format: uuid
         example: 00000000-0000-0000-0000-000000000002
-      fromCurrency:
-        type: string
-        example: GBP
-      toCurrency:
+      currency:
         type: string
         example: GBP
       amount:
@@ -207,13 +204,10 @@ definitions:
         type: string
         example: 00000000-0000-0000-0000-000000000002
         description: account id
-      fromCurrency:
+      currency:
         type: string
         example: GBP
         description: only GBP supported now
-      toCurrency:
-        type: string
-        example: GBP
       amount:
         type: integer
         format: int64

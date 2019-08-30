@@ -13,12 +13,12 @@ object ResponsesFactory {
         )
     )
 
-    fun getBadMethodError() = HandlerResponse(
+    fun getRequestError() = HandlerResponse(
         requestId = UUID.randomUUID(),
         statusCode = StatusCodes.BAD_REQUEST,
         body = ErrorObject(
             errorCode = 1,
-            errorDetails = "Not supported method"
+            errorDetails = "Bad request"
         )
     )
 

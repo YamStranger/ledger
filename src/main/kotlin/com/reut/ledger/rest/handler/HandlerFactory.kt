@@ -50,7 +50,6 @@ class HandlerFactory @Inject constructor(
     private fun HttpHandler.withCors() = CorsHandler(this)
 
     private fun handleBadRequestException(exchange: HttpServerExchange) {
-
         val exception = exchange.getAttachment(ExceptionHandler.THROWABLE) as BadRequestException
         exchange.statusCode = exception.errorResponse.statusCode
         exchange.responseSender.send(

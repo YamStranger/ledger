@@ -39,7 +39,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 
 /**
  * This test created to validate that rest requests processed correctly and passed to handlers correctly.
- * It mocks handlers, and tests only rest server implementation.
+ * It mocks handlers, and tests only rest server implementation, to make sure that params/body parsed correctly and provided to handlers.
  */
 @TestInstance(PER_CLASS)
 class RestServiceApiTest {
@@ -56,8 +56,8 @@ class RestServiceApiTest {
             SERVER_HTTP_PORT, ConfigValueFactory.fromAnyRef(findFreePort())
         )
 
-        injector = createInjector(config, listOf(testModule))
-        application = startApp(injector)
+        injector = config.createInjector(listOf(testModule))
+        application = injector.startApp()
         serverConfiguration = injector.getInstance()
         rootPath = "http://${serverConfiguration.host}:${serverConfiguration.port}"
     }

@@ -45,8 +45,7 @@ object TestResponses {
             id = UUID.randomUUID(),
             from = UUID.randomUUID(),
             to = UUID.randomUUID(),
-            fromCurrency = Currency.GBP,
-            toCurrency = Currency.GBP,
+            currency = Currency.GBP,
             amount = 1000
         )
     )
@@ -60,8 +59,7 @@ object TestResponses {
                     id = UUID.randomUUID(),
                     from = UUID.randomUUID(),
                     to = UUID.randomUUID(),
-                    fromCurrency = Currency.GBP,
-                    toCurrency = Currency.GBP,
+                    currency = Currency.GBP,
                     amount = 1000
                 )
             )

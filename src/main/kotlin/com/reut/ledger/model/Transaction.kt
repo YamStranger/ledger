@@ -6,7 +6,6 @@ data class Transaction(
     val id: UUID,
     val from: UUID,
     val to: UUID,
-    val fromCurrency: Currency,
-    val toCurrency: Currency,
+    val currency: Currency,
     val amount: Long
 )

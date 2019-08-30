@@ -7,6 +7,9 @@ In future only Long and Scale will be used to represent different
 currencies. Currently only one currency is used and all api build around minor units (cents in case of GBP), so to send 
 2 GBP you actually need to send 200 cents.
 
+Each account can hold balances in different currencies. Transfers are supported only between same balances.
+To convert one currency to other currency user should do exchange operation.
+
 Api supports currency, but only one currency actually allowed right now - GBP.
 
 Used tech:
