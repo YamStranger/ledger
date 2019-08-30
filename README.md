@@ -28,7 +28,7 @@ Used tech:
 
 To avoid dependencies problems gradle is used in mode `resolutionStrategy { failOnVersionConflict() }`.
 
-## Balances
+## Accounts structure
 By default only special accounts exists, other accounts use should create:
  - incomeAccount with id `00000000-0000-0000-0001-000000000001`
  - expenseAccount with id `00000000-0000-0000-0001-000000000002`
@@ -50,7 +50,7 @@ expenseAccount will represent for this user all his spendings.
 
 Transfers between accounts can be done, but only till their balance is > 0.
 
-### Usage flow:
+### Use case
 1. Create account for user (for example `00000000-0000-0000-0000-000000000001`)
 2. User can list transactions for account `00000000-0000-0000-0000-000000000001`, now its zero transaction.
 3. User can get balance for account `00000000-0000-0000-0000-000000000001`, all currencies == 0
@@ -91,16 +91,16 @@ Swagger spec created for this service. Its fully interactive, and if you have ru
 this spec to send rest calls, edit fields, read responses, etc.
 
 How to use Swagger Api Docs without Idea: 
- 1 open https://editor.swagger.io/
- 2 copy spec/reut-ledger.yaml to editor
- 3 run server locally (see [Run application] step)
- 4 check how server works with swagger
+ 1. open https://editor.swagger.io/
+ 2. copy spec/reut-ledger.yaml to editor [file](https://github.com/YamStranger/ledger/blob/master/spec/reut-ledger.yaml)
+ 3. run server locally (see [Run application] step)
+ 4. check how server works with swagger
  
  How to use Swagger Api Docs with Idea: 
-  1 install plugin [link](https://plugins.jetbrains.com/plugin/8347-swagger/) 
-  2 open in idea spec/reut-ledger.yaml
-  3 run server locally (see [Run application] step)
-  4 plugin will show option in edit window to open swagger spec in browser. To open interactive page - just press on that button.
+  1. install plugin [link](https://plugins.jetbrains.com/plugin/8347-swagger/) 
+  2. open in idea spec/reut-ledger.yaml
+  3. run server locally (see [Run application] step)
+  4. plugin will show option in edit window to open swagger spec in browser. To open interactive page - just press on that button.
  
 ## Developing application
 Branch name conversion: JIRA-ISSUE1/{feat,chore,test}/name_of_feature
